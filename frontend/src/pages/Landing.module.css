@@ -1,0 +1,46 @@
+.ctaFidelidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 40px 24px;
+    background: var(--color-pine);
+    color: var(--color-white);
+    border-radius: var(--radius-lg);
+}
+
+.ctaTitulo {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 32px;
+    margin: 0 0 12px;
+    color: var(--color-white);
+}
+
+.ctaDescripcion {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 24px;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 560px;
+}
+
+.ctaBoton {
+    padding: 13px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    background: var(--color-marigold);
+    color: var(--color-ink);
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.ctaBoton:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
