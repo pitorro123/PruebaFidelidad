@@ -48,8 +48,8 @@ public class CargaDatosIniciales {
             repositorioTipo.save(new TipoIdentificacion("TI", "Tarjeta de Identidad"));
 
             Pais colombia = repositorioPais.save(new Pais("Colombia"));
-            repositorioPais.save(new Pais("Mexico"));
-            repositorioPais.save(new Pais("Chile"));
+            Pais mexico = repositorioPais.save(new Pais("Mexico"));
+            Pais chile = repositorioPais.save(new Pais("Chile"));
 
             crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, colombia, "Antioquia",
                     "Medellin", "Bello", "Envigado", "Itagui", "Rionegro");
@@ -63,6 +63,22 @@ public class CargaDatosIniciales {
                     "Bucaramanga", "Floridablanca", "Giron");
             crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, colombia, "Cundinamarca",
                     "Soacha", "Chia", "Zipaquiria");
+
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, mexico, "Ciudad de Mexico",
+                    "Ciudad de Mexico");
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, mexico, "Jalisco",
+                    "Guadalajara", "Zapopan");
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, mexico, "Nuevo Leon",
+                    "Monterrey", "Guadalupe");
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, mexico, "Estado de Mexico",
+                    "Ecatepec", "Toluca");
+
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, chile, "Region Metropolitana",
+                    "Santiago", "Providencia", "Las Condes");
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, chile, "Valparaiso",
+                    "Valparaiso", "Vina del Mar");
+            crearDepartamentoConCiudades(repositorioDepartamento, repositorioCiudad, chile, "Biobio",
+                    "Concepcion", "Talcahuano");
         };
     }
 

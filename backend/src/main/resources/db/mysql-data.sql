@@ -36,6 +36,19 @@ INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
     (5, 'Santander',        1),
     (6, 'Cundinamarca',     1);
 
+-- Departamentos de Mexico
+INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
+    (7,  'Ciudad de Mexico',   2),
+    (8,  'Jalisco',            2),
+    (9,  'Nuevo Leon',         2),
+    (10, 'Estado de Mexico',   2);
+
+-- Departamentos (regiones) de Chile
+INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
+    (11, 'Region Metropolitana', 3),
+    (12, 'Valparaiso',           3),
+    (13, 'Biobio',               3);
+
 -- Ciudades
 INSERT IGNORE INTO ciudades (id, nombre, departamento_id) VALUES
     (1,  'Medellin',     1),
@@ -55,4 +68,22 @@ INSERT IGNORE INTO ciudades (id, nombre, departamento_id) VALUES
     (15, 'Giron',        5),
     (16, 'Soacha',       6),
     (17, 'Chia',         6),
-    (18, 'Zipaquiria',   6);
+    (18, 'Zipaquiria',   6),
+
+    -- Ciudades de Mexico
+    (19, 'Ciudad de Mexico', 7),
+    (20, 'Guadalajara',      8),
+    (21, 'Zapopan',          8),
+    (22, 'Monterrey',        9),
+    (23, 'Guadalupe',        9),
+    (24, 'Ecatepec',        10),
+    (25, 'Toluca',          10),
+
+    -- Ciudades de Chile
+    (26, 'Santiago',    11),
+    (27, 'Providencia', 11),
+    (28, 'Las Condes',  11),
+    (29, 'Valparaiso',  12),
+    (30, 'Vina del Mar', 12),
+    (31, 'Concepcion',  13),
+    (32, 'Talcahuano',  13);
