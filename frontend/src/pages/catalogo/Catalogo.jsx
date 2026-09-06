@@ -113,9 +113,21 @@ function Catalogo() {
   const productosPagina = paginaCargada?.productos || []
   const totalPaginas = paginaCargada?.totalPaginas || 1
 
+  const [fidelidadInscrito] = useState(() => localStorage.getItem("fidelidadInscrito") === "true")
+
   return (
     <div className={styles.catalogo}>
-      <h1 className={styles.catalogoTitulo}>Catálogo</h1>
+      <div className={styles.catalogoCabecera}>
+        <h1 className={styles.catalogoTitulo}>Catálogo</h1>
+        {fidelidadInscrito && (
+          <div className={styles.avisoFidelidad}>
+            <span className={styles.avisoFidelidadBadge}>Club fidelidad</span>
+            <p className={styles.avisoFidelidadTexto}>
+              Aprovecha tu <strong>20% de descuento</strong> en tu primera compra.
+            </p>
+          </div>
+        )}
+      </div>
       <div className={styles.catalogoCuerpo}>
         {filtrosVisibles ? (
           <FiltrosCatalogo
