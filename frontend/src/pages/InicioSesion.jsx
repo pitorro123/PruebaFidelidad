@@ -11,8 +11,8 @@ export default function InicioSesion() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Redirigir a la ruta previa de origen si venía de una acción protegida, o a /carrito por defecto
-  const destino = location.state?.from?.pathname || '/carrito'
+  // Redirigir a la ruta previa de origen si venía de una acción protegida, o a la landing / por defecto
+  const destino = location.state?.from?.pathname || '/'
 
   const handleInicioExitoso = () => {
     navigate(destino, { replace: true })

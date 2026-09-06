@@ -7,21 +7,15 @@ import { obtenerNotificaciones } from "../../../../services/notificacionesServic
 import { useEffect, useRef, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { RUTAS } from "../../../../constants/rutas"
+import { useAuth } from "../../../../hooks/useAuth"
 
 const AccionesHeader = () => {
+    const { autenticado, iniciarSesion, cerrarSesion: cerrarSesionContexto } = useAuth()
+    const navigate = useNavigate()
     const [panelActivo, setPanelActivo] = useState(null)
     const [publicarMovilAbierto, setPublicarMovilAbierto] = useState(false)
 
-    const [estaAutenticado, setEstaAutenticado] = useState(() => {
-        const estadoGuardado = localStorage.getItem("estaAutenticado")
-
-        if (estadoGuardado === null) {
-            localStorage.setItem("estaAutenticado", "true")
-            return true
-        }
-
-        return estadoGuardado === "true"
-    })
+    const estaAutenticado = autenticado
     const notificaciones = obtenerNotificaciones()
     const contenedorAcciones = useRef(null)
 
@@ -81,9 +75,8 @@ const AccionesHeader = () => {
     }
 
     function cerrarSesion() {
-        localStorage.setItem("estaAutenticado", "false")
+        cerrarSesionContexto()
 
-        setEstaAutenticado(false)
         setPanelActivo(null)
         setPublicarMovilAbierto(false)
 
@@ -91,8 +84,7 @@ const AccionesHeader = () => {
     }
 
     function activarSesionPrueba() {
-        localStorage.setItem("estaAutenticado", "true")
-        setEstaAutenticado(true)
+        iniciarSesion({ correo: "usuario@ejemplo.com", contrasena: "password123" })
         setPanelActivo(null)
     }
 

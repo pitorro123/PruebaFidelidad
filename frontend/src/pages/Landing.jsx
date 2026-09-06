@@ -24,7 +24,10 @@ function Home() {
     const [claveFidelidad, setClaveFidelidad] = useState(0);
 
     useEffect(() => {
-        if (!autenticado) return;
+        if (!autenticado) {
+            sessionStorage.removeItem(CLAVE_MODAL_FIDELIDAD_VISTO);
+            return;
+        }
         const yaVisto = sessionStorage.getItem(CLAVE_MODAL_FIDELIDAD_VISTO) === 'true';
         if (!yaVisto) {
             const temporizador = setTimeout(() => {
