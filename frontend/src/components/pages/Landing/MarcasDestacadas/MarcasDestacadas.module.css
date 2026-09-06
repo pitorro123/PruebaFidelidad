@@ -1,5 +1,5 @@
 .container {
-    padding: 48px 0;
+    padding: 8px 0 40px 0;
     background-color: var(--color-paper-2);
 }
 
@@ -9,7 +9,7 @@
     font-size: 1.5rem;
     color: var(--color-ink);
     text-align: center;
-    margin: 0 0 32px 0;
+    margin: 0 0 16px 0;
 }
 
 .carousel {
