@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RUTAS } from "../constants/rutas"
 import Hero from "../components/pages/Landing/Hero/Hero";
-import CategoriasDestacadas from "../components/pages/Landing/CategoriasDestacadas/CategoriasDestacadas";
 import Estadisticas from "../components/pages/Landing/Estadisticas/Estadisticas";
 import ProductosDestacados from "../components/pages/Landing/ProductosDestacados/ProductosDestacados";
 import ComoFunciona from "../components/pages/Landing/ComoFunciona/ComoFunciona";
@@ -17,10 +16,6 @@ function Home() {
     const [modalAbierto, setModalAbierto] = useState(false);
 
     const handleExplorarCatalogo = () => {
-        navigate(RUTAS.CATALOGO);
-    };
-
-    const handleSeleccionarCategoria = () => {
         navigate(RUTAS.CATALOGO);
     };
 
@@ -55,7 +50,6 @@ function Home() {
                 onExplorarCatalogo={handleExplorarCatalogo}
             />
             <Estadisticas />
-            <CategoriasDestacadas onSeleccionarCategoria={handleSeleccionarCategoria} />
             <ProductosDestacados
                 onVerProducto={handleVerProducto}
                 onAgregarCarrito={handleAgregarCarrito}
