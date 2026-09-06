@@ -1,39 +1,28 @@
-import { prendasBusquedaMock } from "../data/prendasBusquedaMock";
+import { productos } from "../data/catalogoProductos";
+import { mapearProductoLocal } from "./productosService";
 
 export function buscarPrendas(terminoBusqueda) {
     const termino = terminoBusqueda.trim().toLowerCase();
-    const resultado = [];
-
-    prendasBusquedaMock.forEach((prenda) => {
-        const titulo = prenda.titulo.toLowerCase();
-        const tituloExiste = resultado.some((tituloGuardado) => {
-            return tituloGuardado.toLowerCase() === titulo
-        })
-
-        if (titulo.includes(termino) && !tituloExiste) {
-            resultado.push(prenda.titulo);
-        }
-    })
-    return resultado;
+    return productos
+        .map((p) => p.nombre)
+        .filter((titulo) => titulo.toLowerCase().includes(termino))
+        .slice(0, 6);
 }
 
 export function buscarVendedores(terminoBusqueda) {
     const termino = terminoBusqueda.trim().toLowerCase();
-    const resultado = [];
-
-    prendasBusquedaMock.forEach((vendedor) => {
-        const nombreVendedor = vendedor.nombreVendedor.toLowerCase();
-        const vendedorExiste = resultado.some((vendedorGuardado) => {
-            return vendedorGuardado.idVendedor === vendedor.idVendedor
-        })
-
-        if (nombreVendedor.includes(termino) && !vendedorExiste) {
-            resultado.push({
-                idVendedor: vendedor.idVendedor,
-                nombreVendedor: vendedor.nombreVendedor,
-                calificacionVendedor: vendedor.calificacionVendedor
-            });
-        }
-    })
-    return resultado;
+    const vistos = new Set();
+    return productos
+        .map(mapearProductoLocal)
+        .map((p) => ({
+            idVendedor: p.id,
+            nombreVendedor: p.vendedor,
+            calificacionVendedor: p.calificacion,
+        }))
+        .filter((vendedor) => {
+            if (!vendedor.nombreVendedor.toLowerCase().includes(termino)) return false;
+            if (vistos.has(vendedor.nombreVendedor)) return false;
+            vistos.add(vendedor.nombreVendedor);
+            return true;
+        });
 }

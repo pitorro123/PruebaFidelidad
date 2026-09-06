@@ -169,12 +169,22 @@ function paginarProductos(productosLista, pagina) {
   }
 }
 
-export async function obtenerProductos({ filtrosActivos = {}, orden = 'mas_recientes', pagina = 1 }) {
+export async function obtenerProductos({ filtrosActivos = {}, orden = 'mas_recientes', pagina = 1, busqueda = '' }) {
   const filtrados = filtrarProductosLocal(productos, filtrosEnFormatoLocal(filtrosActivos))
-  let mapeados = filtrados.map(mapearProductoLocal)
+  const conBusqueda = filtrarPorBusqueda(filtrados, busqueda)
+  let mapeados = conBusqueda.map(mapearProductoLocal)
   if (filtrosActivos.vendedor?.length) {
     mapeados = filtrarProductos(mapeados, { vendedor: filtrosActivos.vendedor })
   }
   const ordenados = ordenarProductos(mapeados, orden)
   return paginarProductos(ordenados, pagina)
+}
+
+function filtrarPorBusqueda(listaProductos, busqueda) {
+  const termino = String(busqueda || '').trim().toLowerCase()
+  if (!termino) return listaProductos
+  return listaProductos.filter((producto) =>
+    [producto.nombre, producto.marca, producto.categoria, producto.color]
+      .some((campo) => String(campo || '').toLowerCase().includes(termino)),
+  )
 }

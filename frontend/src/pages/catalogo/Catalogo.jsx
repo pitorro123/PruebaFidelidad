@@ -22,17 +22,19 @@ function filtroInicialDesdeUrl(searchParams) {
   return opcion ? { categoria: [opcion.id] } : {}
 }
 
-function claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual) {
+function claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda) {
   const filtros = Object.entries(filtrosActivos)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([filtroId, opciones]) => `${filtroId}:${[...opciones].sort().join(',')}`)
     .join('|')
-  return `${filtros}|${ordenSeleccionado}|${paginaActual}`
+  return `${filtros}|${ordenSeleccionado}|${paginaActual}|${busqueda}`
 }
 
 function Catalogo() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+
+  const busqueda = searchParams.get('busqueda') || ''
 
   const [filtrosActivos, setFiltrosActivos] = useState(() =>
     filtroInicialDesdeUrl(searchParams),
@@ -44,13 +46,14 @@ function Catalogo() {
   const [paginasCargadas, setPaginasCargadas] = useState({})
 
   useEffect(() => {
-    const clave = claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual)
+    const clave = claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda)
     if (paginasCargadas[clave]) return
     let activo = true
     obtenerProductos({
       filtrosActivos,
       orden: ordenSeleccionado,
       pagina: paginaActual,
+      busqueda,
     }).then((resultado) => {
       if (activo) {
         setPaginasCargadas((prev) => ({ ...prev, [clave]: resultado }))
@@ -59,7 +62,7 @@ function Catalogo() {
     return () => {
       activo = false
     }
-  }, [filtrosActivos, ordenSeleccionado, paginaActual, paginasCargadas])
+  }, [filtrosActivos, ordenSeleccionado, paginaActual, busqueda, paginasCargadas])
 
   const manejarCambioFiltro = (filtroId, opcionId) => {
     setFiltrosActivos((prev) => {
@@ -106,7 +109,7 @@ function Catalogo() {
   }
 
   const paginaCargada =
-    paginasCargadas[claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual)]
+    paginasCargadas[claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda)]
   const productosPagina = paginaCargada?.productos || []
   const totalPaginas = paginaCargada?.totalPaginas || 1
 
