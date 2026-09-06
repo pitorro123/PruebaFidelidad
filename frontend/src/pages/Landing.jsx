@@ -81,11 +81,6 @@ function Home() {
                 onExplorarCatalogo={handleExplorarCatalogo}
             />
             <MarcasDestacadas />
-            <ProductosDestacados
-                onVerProducto={handleVerProducto}
-                onAgregarCarrito={handleAgregarCarrito}
-                onTrueque={handleTrueque}
-            />
             <section className={styles.ctaFidelidad}>
                 <p className={styles.ctaBadge}>Programa de fidelidad</p>
                 <h2 className={styles.ctaTitulo}>Ahorra 20% en tu primera compra</h2>
@@ -101,6 +96,11 @@ function Home() {
                     Quiero mi 20% de descuento
                 </button>
             </section>
+            <ProductosDestacados
+                onVerProducto={handleVerProducto}
+                onAgregarCarrito={handleAgregarCarrito}
+                onTrueque={handleTrueque}
+            />
             < Testimonios />
 
             <ProductModal
