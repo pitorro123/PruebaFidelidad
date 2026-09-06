@@ -10,6 +10,7 @@ import com.example.fidelidad.repositorios.ICiudadRepositorio;
 import com.example.fidelidad.repositorios.IClienteFidelidadRepositorio;
 import com.example.fidelidad.repositorios.IMarcaRepositorio;
 import com.example.fidelidad.repositorios.ITipoIdentificacionRepositorio;
+import com.example.fidelidad.servicios.correo.IServicioCorreo;
 import com.example.fidelidad.validaciones.fidelidad.IValidacionClienteFidelidad;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,24 +28,28 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
     private final ICiudadRepositorio repositorioCiudad;
     private final IMarcaRepositorio repositorioMarca;
     private final IValidacionClienteFidelidad validador;
+    private final IServicioCorreo servicioCorreo;
 
     public ServicioClienteFidelidadImpl(
             IClienteFidelidadRepositorio repositorioCliente,
             ITipoIdentificacionRepositorio repositorioTipo,
             ICiudadRepositorio repositorioCiudad,
             IMarcaRepositorio repositorioMarca,
-            IValidacionClienteFidelidad validador) {
+            IValidacionClienteFidelidad validador,
+            IServicioCorreo servicioCorreo) {
         this.repositorioCliente = repositorioCliente;
         this.repositorioTipo = repositorioTipo;
         this.repositorioCiudad = repositorioCiudad;
         this.repositorioMarca = repositorioMarca;
         this.validador = validador;
+        this.servicioCorreo = servicioCorreo;
     }
 
     @Override
     @Transactional
     public ClienteFidelidadResponseDTO crear(ClienteFidelidadRequestDTO dto) {
         validador.validar(
+                dto.email(),
                 dto.tipoIdentificacionId(),
                 dto.numeroIdentificacion(),
                 dto.fechaNacimiento(),
@@ -54,6 +59,7 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
                 dto.marcaId());
 
         ClienteFidelidad cliente = new ClienteFidelidad();
+        cliente.setEmail(dto.email().trim().toLowerCase());
         cliente.setTipoIdentificacion(repositorioTipo.findById(dto.tipoIdentificacionId()).orElseThrow());
         cliente.setNumeroIdentificacion(dto.numeroIdentificacion().trim());
         cliente.setNombres(dto.nombres().trim());
@@ -69,7 +75,9 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
         cliente.setMarca(repositorioMarca.findById(dto.marcaId()).orElseThrow());
         cliente.setFechaRegistro(LocalDate.now());
 
-        return toResponse(repositorioCliente.save(cliente));
+        ClienteFidelidad guardado = repositorioCliente.save(cliente);
+        servicioCorreo.enviarBienvenida(guardado.getEmail(), guardado.getNombres(), guardado.getMarca().getNombre(), true);
+        return toResponse(guardado);
     }
 
     @Override

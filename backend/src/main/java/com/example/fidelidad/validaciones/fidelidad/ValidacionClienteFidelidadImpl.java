@@ -44,9 +44,16 @@ public class ValidacionClienteFidelidadImpl implements IValidacionClienteFidelid
     }
 
     @Override
-    public void validar(Long tipoIdentificacionId, String numeroIdentificacion,
+    public void validar(String email, Long tipoIdentificacionId, String numeroIdentificacion,
                         LocalDate fechaNacimiento, Long paisId, Long departamentoId,
                         Long ciudadId, Long marcaId) {
+
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email es obligatorio");
+        }
+        if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El formato del email es invalido");
+        }
 
         TipoIdentificacion tipo = repositorioTipoIdentificacion.findById(tipoIdentificacionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de identificacion invalido"));

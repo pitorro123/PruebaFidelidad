@@ -1,0 +1,140 @@
+.tarjeta {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 2.25rem 2rem;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(21, 32, 27, 0.04);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcono {
+  position: absolute;
+  left: 0.85rem;
+  font-size: 1rem;
+  color: #8a8f8a;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 0.9rem 0.75rem 2.4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input:focus {
+  border-color: var(--pine);
+  box-shadow: 0 0 0 3px rgba(31, 94, 74, 0.12);
+}
+
+.inputError {
+  border-color: var(--clay) !important;
+}
+
+.errorTexto {
+  font-size: 0.78rem;
+  color: var(--clay);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.82rem;
+}
+
+.checkboxInput {
+  accent-color: var(--pine);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.alertaErrorGlobal {
+  background: rgba(232, 100, 60, 0.12);
+  border: 1px solid var(--clay);
+  color: var(--clay);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.btnSubmit {
+  background: var(--clay);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btnSubmit:hover:not(:disabled) {
+  opacity: 0.94;
+}
+
+.btnSubmit:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pieSesion {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #5a5f5a;
+}
+
+.pieSesion a {
+  color: var(--pine);
+  font-weight: 700;
+  margin-left: 0.3rem;
+}
+
+.pieSesion a:hover {
+  text-decoration: underline;
+}

@@ -6,6 +6,7 @@ import com.example.fidelidad.dtos.auth.RegistroRequestDTO;
 import com.example.fidelidad.dtos.auth.RegistroResponseDTO;
 import com.example.fidelidad.modelos.Usuario;
 import com.example.fidelidad.repositorios.IUsuarioRepositorio;
+import com.example.fidelidad.servicios.correo.IServicioCorreo;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class ServicioAuthImpl implements IServicioAuth {
 
     private final IUsuarioRepositorio repositorioUsuario;
+    private final IServicioCorreo servicioCorreo;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public ServicioAuthImpl(IUsuarioRepositorio repositorioUsuario) {
+    public ServicioAuthImpl(IUsuarioRepositorio repositorioUsuario, IServicioCorreo servicioCorreo) {
         this.repositorioUsuario = repositorioUsuario;
+        this.servicioCorreo = servicioCorreo;
     }
 
     @Override
@@ -32,9 +35,16 @@ public class ServicioAuthImpl implements IServicioAuth {
         if (repositorioUsuario.existsByEmailIgnoreCase(dto.email().trim())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El email ya esta registrado");
         }
-        Usuario usuario = new Usuario(dto.email().trim().toLowerCase(), passwordEncoder.encode(dto.password()));
+        String email = dto.email().trim().toLowerCase();
+        Usuario usuario = new Usuario(email, passwordEncoder.encode(dto.password()));
         Usuario guardado = repositorioUsuario.save(usuario);
+        servicioCorreo.enviarBienvenida(email, nombreDesdeEmail(email), null, false);
         return new RegistroResponseDTO(guardado.getId(), guardado.getEmail());
+    }
+
+    private String nombreDesdeEmail(String email) {
+        String nombre = email.substring(0, email.indexOf('@'));
+        return Character.toUpperCase(nombre.charAt(0)) + nombre.substring(1);
     }
 
     @Override

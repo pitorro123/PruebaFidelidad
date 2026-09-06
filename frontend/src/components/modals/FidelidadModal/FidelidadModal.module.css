@@ -118,10 +118,9 @@
 }
 
 .etiqueta {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text);
 }
 

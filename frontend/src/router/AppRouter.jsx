@@ -6,6 +6,7 @@ import Landing from "../pages/Landing"
 import Catalogo from "../pages/catalogo/Catalogo"
 import PaginaDetalleProducto from "../pages/PaginaDetalleProducto"
 import InicioSesion from "../pages/InicioSesion"
+import Registro from "../pages/Registro"
 
 const AppRouter = () => {
     return (
@@ -23,7 +24,7 @@ const AppRouter = () => {
                     <Route path={RUTAS.DETALLE_PRODUCTO} element={<PaginaDetalleProducto />}/>
                 </Route>
                 <Route element={<AuthLayout />}>
-                    <Route path={RUTAS.REGISTRO} element={null}/>
+                    <Route path={RUTAS.REGISTRO} element={<Registro />}/>
                     <Route path={RUTAS.INICIAR_SESION} element={<InicioSesion />}/>
                 </Route>
             </Routes>

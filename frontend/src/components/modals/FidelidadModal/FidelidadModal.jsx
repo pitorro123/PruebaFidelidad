@@ -37,6 +37,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
   const [registroExitoso, setRegistroExitoso] = useState(null);
 
   const [formulario, setFormulario] = useState({
+    email: "",
     tipoIdentificacionId: "",
     numeroIdentificacion: "",
     nombres: "",
@@ -104,6 +105,8 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
   };
 
   const validarFormulario = () => {
+    if (!formulario.email.trim()) return "Ingresa tu correo electronico.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formulario.email.trim())) return "Ingresa un correo electronico valido.";
     if (!formulario.tipoIdentificacionId) return "Selecciona el tipo de identificacion.";
     if (!formulario.numeroIdentificacion.trim()) return "Ingresa el numero de identificacion.";
     if (!formulario.nombres.trim()) return "Ingresa tus nombres.";
@@ -132,6 +135,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
     setCargando(true);
     try {
       const datos = {
+        email: formulario.email.trim(),
         tipoIdentificacionId: Number(formulario.tipoIdentificacionId),
         numeroIdentificacion: formulario.numeroIdentificacion.trim(),
         nombres: formulario.nombres.trim(),
@@ -207,6 +211,20 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
               </div>
             ) : (
               <form className={styles.formulario} onSubmit={manejarEnvio} noValidate>
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="email">
+                    Correo electronico
+                  </label>
+                  <input
+                    id="email"
+                    className={styles.input}
+                    type="email"
+                    value={formulario.email}
+                    onChange={(e) => actualizarCampo("email", e.target.value)}
+                    placeholder="tucorreo@ejemplo.com"
+                  />
+                </div>
+
                 <div className={styles.grupo}>
                   <label className={styles.etiqueta} htmlFor="tipoIdentificacion">
                     Tipo de identificacion
