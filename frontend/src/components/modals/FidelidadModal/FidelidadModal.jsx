@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   cargarCatalogosIniciales,
   obtenerDepartamentos,
@@ -143,7 +144,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
 
   if (!estaAbierto) return null;
 
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={onCerrar}>
       <div
         className={styles.modal}
@@ -365,7 +366,8 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
