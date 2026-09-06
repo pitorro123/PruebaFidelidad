@@ -4,7 +4,6 @@ import { RUTAS } from "../constants/rutas"
 import { useAuth } from "../hooks/useAuth";
 import Hero from "../components/pages/Landing/Hero/Hero";
 import ProductosDestacados from "../components/pages/Landing/ProductosDestacados/ProductosDestacados";
-import ComoFunciona from "../components/pages/Landing/ComoFunciona/ComoFunciona";
 import MarcasDestacadas from "../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
 import Testimonios from "../components/pages/Landing/Testimonios/Testimonios";
 import ProductModal from "../components/modals/ProductModal/ProductModal";
@@ -83,7 +82,6 @@ function Home() {
                 onAgregarCarrito={handleAgregarCarrito}
                 onTrueque={handleTrueque}
             />
-            < ComoFunciona />
             <section className={styles.ctaFidelidad}>
                 <h2 className={styles.ctaTitulo}>Programa de fidelidad</h2>
                 <p className={styles.ctaDescripcion}>
