@@ -38,6 +38,10 @@ function Home() {
     }, [autenticado]);
 
     const abrirModalFidelidad = () => {
+        if (!autenticado) {
+            navigate(RUTAS.INICIAR_SESION);
+            return;
+        }
         setModalFidelidadAbierto(true);
         setClaveFidelidad((c) => c + 1);
     };
@@ -83,16 +87,18 @@ function Home() {
                 onTrueque={handleTrueque}
             />
             <section className={styles.ctaFidelidad}>
-                <h2 className={styles.ctaTitulo}>Programa de fidelidad</h2>
+                <p className={styles.ctaBadge}>Programa de fidelidad</p>
+                <h2 className={styles.ctaTitulo}>Ahorra 20% en tu primera compra</h2>
                 <p className={styles.ctaDescripcion}>
-                    Registrate gratis y accede a beneficios exclusivos de las marcas del grupo: descuentos, trueques y ofertas especiales.
+                    Descubre nuestro mundo circular de moda sostenible. Disfruta de descuentos exclusivos, trueques
+                    de prendas y ofertas especiales de todas las marcas del grupo.
                 </p>
                 <button
                     type="button"
                     className={styles.ctaBoton}
                     onClick={abrirModalFidelidad}
                 >
-                    Unete al programa de fidelidad
+                    Quiero mi 20% de descuento
                 </button>
             </section>
             < Testimonios />

@@ -33,6 +33,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [reintento, setReintento] = useState(0);
+  const [registroExitoso, setRegistroExitoso] = useState(null);
 
   const [formulario, setFormulario] = useState({
     tipoIdentificacionId: "",
@@ -142,6 +143,10 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
         marcaId: Number(formulario.marcaId),
       };
       await registrarClienteFidelidad(datos);
+      setRegistroExitoso({
+        nombres: formulario.nombres.trim(),
+        marca: marcas.find((m) => String(m.id) === String(formulario.marcaId))?.nombre || "",
+      });
       setVista(VISTA_EXITO);
     } catch (e) {
       setError(e?.message || "Ocurrio un error al registrar. Intentalo de nuevo.");
@@ -171,10 +176,14 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
               &times;
             </button>
 
-            <h2 className={styles.titulo}>Programa de fidelidad</h2>
-            <p className={styles.subtitulo}>
-              Registrate en el programa de fidelidad de la marca de tu preferencia y disfruta de beneficios exclusivos.
-            </p>
+            <div className={styles.cabecera}>
+              <p className={styles.badge}>Beneficio exclusivo</p>
+              <h2 className={styles.titulo}>Ahorra 20% en tu primera compra</h2>
+              <p className={styles.subtitulo}>
+                Registrate gratis con la marca de tu preferencia y desbloquea descuentos,
+                trueques y ofertas especiales.
+              </p>
+            </div>
 
             {cargandoCatalogo ? (
               <p className={styles.cargando}>Cargando catalogos...</p>
@@ -375,10 +384,15 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
         ) : (
           <div className={styles.exito}>
             <div className={styles.iconoExito}>&#10003;</div>
-            <h2 className={styles.tituloExito}>Registro exitoso</h2>
+            <h2 className={styles.tituloExito}>Bienvenido al club, {registroExitoso?.nombres?.split(" ")[0] || ""}</h2>
             <p className={styles.mensajeExito}>
-              Te registraste en el programa de fidelidad con exito.
+              Tu registro en el programa de fidelidad{registroExitoso?.marca ? ` de ${registroExitoso.marca}` : ""} fue exitoso.
+              Ya puedes disfrutar de tu <strong>20% de descuento</strong> en tu primera compra.
             </p>
+            <ul className={styles.listaBeneficios}>
+              <li>20% de descuento en tu primera compra</li>
+              <li>Ofertas exclusivas de tu marca</li>
+            </ul>
             <button type="button" className={styles.botonEnviar} onClick={onCerrar}>
               Continuar
             </button>
