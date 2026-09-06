@@ -1,6 +1,6 @@
 .catalogo {
   text-align: left;
-  padding: 24px;
+  padding: 8px 24px 24px;
 }
 
 .catalogoTitulo {
@@ -14,7 +14,7 @@
   grid-template-columns: 240px 1fr;
   column-gap: 20px;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 640px) {
