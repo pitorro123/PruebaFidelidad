@@ -2,8 +2,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 240px;
-  padding: 40px 64px;
+  min-height: 120px;
+  padding: 20px 64px;
   background-color: var(--color-pine);
   background-size: cover;
   background-position: center 20%;
@@ -30,31 +30,32 @@
 .title {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1.6rem;
+  font-size: 2.2rem;
   color: var(--color-paper);
   line-height: 1.15;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  white-space: nowrap;
 }
 
 .description {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   color: var(--color-paper);
   opacity: 0.9;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   line-height: 1.6;
 }
 
 .button {
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: var(--color-paper);
   background-color: transparent;
   border: 2px solid var(--color-paper);
   border-radius: 8px;
-  padding: 8px 18px;
+  padding: 10px 22px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
@@ -69,8 +70,8 @@
 
 @media (max-width: 992px) {
   .hero {
-    padding: 30px 32px;
-    min-height: 200px;
+    padding: 16px 32px;
+    min-height: 100px;
   }
 
   .content {
@@ -78,6 +79,6 @@
   }
 
   .title {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
   }
 }
