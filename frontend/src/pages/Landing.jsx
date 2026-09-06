@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { RUTAS } from "../constants/rutas"
 import { useAuth } from "../hooks/useAuth";
 import Hero from "../components/pages/Landing/Hero/Hero";
-import ProductosDestacados from "../components/pages/Landing/ProductosDestacados/ProductosDestacados";
 import MarcasDestacadas from "../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
-import ProductModal from "../components/modals/ProductModal/ProductModal";
 import FidelidadModal from "../components/modals/FidelidadModal/FidelidadModal";
 import styles from "./Landing.module.css";
 
@@ -15,8 +13,6 @@ function Home() {
     const navigate = useNavigate();
     const { autenticado } = useAuth();
     const heroImg = "https://res.cloudinary.com/ihe8jaok/image/upload/v1788192323/landing_img.jpg"
-    const [productoSeleccionado, setProductoSeleccionado] = useState(null);
-    const [modalAbierto, setModalAbierto] = useState(false);
     const [modalFidelidadAbierto, setModalFidelidadAbierto] = useState(false);
     const [claveFidelidad, setClaveFidelidad] = useState(0);
 
@@ -49,28 +45,6 @@ function Home() {
         navigate(RUTAS.CATALOGO);
     };
 
-    const abrirModalProducto = (producto) => {
-        setProductoSeleccionado(producto);
-        setModalAbierto(true);
-    };
-
-    const handleVerProducto = (producto) => {
-        abrirModalProducto(producto);
-    };
-
-    const handleAgregarCarrito = (producto) => {
-        abrirModalProducto(producto);
-    };
-
-    const handleTrueque = (producto) => {
-        abrirModalProducto(producto);
-    };
-
-    const handleVerCatalogo = () => {
-        setModalAbierto(false);
-        navigate(RUTAS.CATALOGO);
-    };
-
     return (
         <>
             <Hero
@@ -95,18 +69,6 @@ function Home() {
                     Quiero mi 20% de descuento
                 </button>
             </section>
-            <ProductosDestacados
-                onVerProducto={handleVerProducto}
-                onAgregarCarrito={handleAgregarCarrito}
-                onTrueque={handleTrueque}
-            />
-            <ProductModal
-                producto={productoSeleccionado}
-                estaAbierto={modalAbierto && !!productoSeleccionado}
-                onCerrar={() => setModalAbierto(false)}
-                onProponerTrueque={handleVerCatalogo}
-                onVerCatalogo={handleVerCatalogo}
-            />
             <FidelidadModal
                 key={claveFidelidad}
                 estaAbierto={modalFidelidadAbierto}

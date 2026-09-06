@@ -1,27 +1,15 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import InformacionProducto from '../components/pages/catalogo/InformacionProducto';
 import SeccionesProducto from '../components/pages/catalogo/SeccionesProducto';
 import ProductosRelacionados from '../components/pages/catalogo/ProductosRelacionados';
 import GaleriaProducto from '../components/pages/catalogo/GaleriaProducto';
-import TradeModal from '../components/modals/TradeModal/TradeModal';
 import { fetchProductById, fetchProducts } from '../services/productService';
-import { productos as productosCatalogo } from '../data/catalogoProductos';
-import { mapearProductoLocal } from '../services/productosService';
-import { mezclarArray } from '../utils/aleatorio';
 import styles from './DetalleProducto.module.css';
 
 const PaginaDetalleProducto = () => {
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [truequeAbierto, setTruequeAbierto] = useState(false);
-
-  const prendasParaTrueque = useMemo(() => {
-    const disponibles = productosCatalogo
-      .map(mapearProductoLocal)
-      .filter((p) => p.id !== producto?.id);
-    return mezclarArray(disponibles).slice(0, 2);
-  }, [producto?.id]);
 
   const loadProducto = async (id) => {
     try {
@@ -78,20 +66,6 @@ const PaginaDetalleProducto = () => {
     console.log('Agregado al carrito:', { prod, talla, cantidad });
   };
 
-  const handleProponerTrueque = () => {
-    const usuarioAutenticado = true;
-    if (usuarioAutenticado) setTruequeAbierto(true);
-    else alert('Abriendo modal de identificación (Login)...');
-  };
-
-  const handleEnviarPropuesta = (prendasSeleccionadas) => {
-    console.log('Propuesta de trueque enviada:', {
-      producto: producto?.id,
-      prendasSeleccionadas,
-    });
-    setTruequeAbierto(false);
-  };
-
   if (loading) return <div>Cargando producto...</div>;
   if (error) return <div>{error}</div>;
   if (!producto) return <div>Producto no encontrado</div>;
@@ -103,7 +77,6 @@ const PaginaDetalleProducto = () => {
         <InformacionProducto
           producto={producto}
           onAgregarCarrito={handleAgregarCarrito}
-          onProponerTrueque={handleProponerTrueque}
         />
       </div>
 
@@ -115,14 +88,6 @@ const PaginaDetalleProducto = () => {
           window.history.pushState({ productoId: id }, '', `/producto/${id}`);
           loadProducto(id);
         }}
-      />
-
-      <TradeModal
-        productoObjetivo={producto}
-        prendasUsuario={prendasParaTrueque}
-        estaAbierto={truequeAbierto}
-        onCerrar={() => setTruequeAbierto(false)}
-        onSubmit={handleEnviarPropuesta}
       />
     </div>
   );

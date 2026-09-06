@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import styles from '../../../pages/DetalleProducto.module.css';
 
-const InformacionProducto = ({ producto = {}, onAgregarCarrito, onProponerTrueque }) => {
+const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
   const tallasDisponibles = producto.tallas || [];
   const [tallaSeleccionada, setTallaSeleccionada] = useState(tallasDisponibles[0] || null);
   const [cantidad, setCantidad] = useState(1);
   const [agregadoAlCarrito, setAgregadoAlCarrito] = useState(false);
-  const [estadoTrueque, setEstadoTrueque] = useState(false); // Simula si ya propuso trueque o tiene uno asociado
 
   if (!producto || Object.keys(producto).length === 0) return null;
 
@@ -65,16 +64,6 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito, onProponerTruequ
           disabled={agregadoAlCarrito}
         >
           {agregadoAlCarrito ? 'Añadido al carrito' : 'Añadir al carrito'}
-        </button>
-
-        <button 
-          onClick={() => {
-            onProponerTrueque();
-            setEstadoTrueque(true);
-          }} 
-          className={styles.btnTrueque}
-        >
-          {estadoTrueque ? 'Trueque propuesto' : 'Proponer Trueque'}
         </button>
       </div>
     </div>
