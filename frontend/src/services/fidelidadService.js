@@ -1,10 +1,15 @@
-const API_BASE = 'http://localhost:8080/api'
+const API_BASE = '/api'
 
 async function peticionJson(url, opciones = {}) {
-  const respuesta = await fetch(`${API_BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opciones,
-  })
+  let respuesta
+  try {
+    respuesta = await fetch(`${API_BASE}${url}`, {
+      headers: { 'Content-Type': 'application/json' },
+      ...opciones,
+    })
+  } catch {
+    throw new Error('No se pudo conectar con el servidor. Verifica que el backend este corriendo en http://localhost:8080.')
+  }
 
   if (!respuesta.ok) {
     let mensaje = `Error ${respuesta.status}`

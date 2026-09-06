@@ -32,6 +32,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
   const [marcas, setMarcas] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
+  const [reintento, setReintento] = useState(0);
 
   const [formulario, setFormulario] = useState({
     tipoIdentificacionId: "",
@@ -66,7 +67,14 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
     return () => {
       activo = false;
     };
-  }, []);
+  }, [reintento]);
+
+  const reintentarCarga = () => {
+    setError("");
+    setCargandoCatalogo(true);
+    setCargando(false);
+    setReintento((r) => r + 1);
+  };
 
   const actualizarCampo = (campo, valor) => {
     setFormulario((prev) => ({ ...prev, [campo]: valor }));
@@ -170,6 +178,17 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
 
             {cargandoCatalogo ? (
               <p className={styles.cargando}>Cargando catalogos...</p>
+            ) : tiposIdentificacion.length === 0 && error ? (
+              <div className={styles.errorCarga}>
+                <p className={styles.mensajeErrorCarga}>{error}</p>
+                <button
+                  type="button"
+                  className={styles.botonReintentar}
+                  onClick={reintentarCarga}
+                >
+                  Reintentar
+                </button>
+              </div>
             ) : (
               <form className={styles.formulario} onSubmit={manejarEnvio} noValidate>
                 <div className={styles.grupo}>

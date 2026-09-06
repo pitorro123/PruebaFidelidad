@@ -3,7 +3,24 @@
 // Catálogo de prendas + estructura de filtros (ComercioAPP)
 // ============================================================
 
-// ---------- Catálogo de productos ----------
+// ---------- 1. Opciones de filtros (para pintar los checkboxes/select) ----------
+
+export const opcionesFiltros = {
+  categoria: ['Chaquetas', 'Vestidos', 'Pantalones', 'Blusas', 'Camisas', 'Faldas', 'Zapatos', 'Accesorios'],
+  talla: ['XS', 'S', 'M', 'L', 'XL'],
+  color: ['Negro', 'Blanco', 'Azul', 'Rojo', 'Verde', 'Beige', 'Rosa', 'Amarillo'],
+  marca: ['Americanino', 'American Eagle', 'Chevignon', 'Esprit', 'Naf Naf', 'Rifle'],
+  precio: [
+    { etiqueta: 'Hasta $50.000', min: 0, max: 50000 },
+    { etiqueta: '$50.000 - $100.000', min: 50000, max: 100000 },
+    { etiqueta: '$100.000 - $200.000', min: 100000, max: 200000 },
+    { etiqueta: '$200.000 - $500.000', min: 200000, max: 500000 },
+  ],
+  estadoPrenda: ['Nuevo', 'Excelente', 'Muy bueno', 'Bueno'],
+  disponiblePara: ['Mujer', 'Hombre', 'Niño', 'Unisex'],
+};
+
+// ---------- 2. Catálogo de productos (uno por cada imagen recortada) ----------
 
 const urlBaseImagenes = 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/';
 
@@ -15,7 +32,7 @@ export const productos = [
     categoria: 'Chaquetas',
     talla: 'M',
     color: 'Negro',
-    marca: 'Levis',
+    marca: 'Americanino',
     precio: 180000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Unisex',
@@ -27,7 +44,7 @@ export const productos = [
     categoria: 'Vestidos',
     talla: 'S',
     color: 'Rojo',
-    marca: 'Zara',
+    marca: 'Naf Naf',
     precio: 89000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Mujer',
@@ -39,7 +56,7 @@ export const productos = [
     categoria: 'Pantalones',
     talla: 'M',
     color: 'Azul',
-    marca: 'Zara',
+    marca: 'Rifle',
     precio: 120000,
     estadoPrenda: 'Excelente',
     disponiblePara: 'Mujer',
@@ -51,7 +68,7 @@ export const productos = [
     categoria: 'Blusas',
     talla: 'S',
     color: 'Beige',
-    marca: 'Zara',
+    marca: 'Esprit',
     precio: 75000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Mujer',
@@ -63,7 +80,7 @@ export const productos = [
     categoria: 'Camisas',
     talla: 'L',
     color: 'Blanco',
-    marca: 'Adidas',
+    marca: 'American Eagle',
     precio: 130000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Hombre',
@@ -75,7 +92,7 @@ export const productos = [
     categoria: 'Faldas',
     talla: 'S',
     color: 'Rosa',
-    marca: 'Zara',
+    marca: 'Naf Naf',
     precio: 68000,
     estadoPrenda: 'Muy bueno',
     disponiblePara: 'Mujer',
@@ -87,7 +104,7 @@ export const productos = [
     categoria: 'Zapatos',
     talla: 'M',
     color: 'Azul',
-    marca: 'Nike',
+    marca: 'American Eagle',
     precio: 175000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Hombre',
@@ -99,7 +116,7 @@ export const productos = [
     categoria: 'Pantalones',
     talla: 'M',
     color: 'Negro',
-    marca: 'Zara',
+    marca: 'Chevignon',
     precio: 95000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Unisex',
@@ -111,7 +128,7 @@ export const productos = [
     categoria: 'Chaquetas',
     talla: 'M',
     color: 'Rojo',
-    marca: 'Nike',
+    marca: 'American Eagle',
     precio: 160000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Unisex',
@@ -123,7 +140,7 @@ export const productos = [
     categoria: 'Camisas',
     talla: 'L',
     color: 'Azul',
-    marca: 'H&M',
+    marca: 'Chevignon',
     precio: 89000,
     estadoPrenda: 'Muy bueno',
     disponiblePara: 'Hombre',
@@ -135,7 +152,7 @@ export const productos = [
     categoria: 'Faldas',
     talla: 'S',
     color: 'Blanco',
-    marca: 'Zara',
+    marca: 'Rifle',
     precio: 78000,
     estadoPrenda: 'Excelente',
     disponiblePara: 'Mujer',
@@ -147,7 +164,7 @@ export const productos = [
     categoria: 'Zapatos',
     talla: 'M',
     color: 'Rosa',
-    marca: 'Nike',
+    marca: 'American Eagle',
     precio: 145000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Mujer',
@@ -159,7 +176,7 @@ export const productos = [
     categoria: 'Accesorios',
     talla: 'M',
     color: 'Negro',
-    marca: 'Zara',
+    marca: 'Chevignon',
     precio: 45000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Unisex',
@@ -171,7 +188,7 @@ export const productos = [
     categoria: 'Pantalones',
     talla: 'M',
     color: 'Verde',
-    marca: 'Zara',
+    marca: 'Americanino',
     precio: 98000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Unisex',
@@ -183,7 +200,7 @@ export const productos = [
     categoria: 'Chaquetas',
     talla: 'M',
     color: 'Beige',
-    marca: 'Zara',
+    marca: 'Esprit',
     precio: 320000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Mujer',
@@ -195,7 +212,7 @@ export const productos = [
     categoria: 'Vestidos',
     talla: 'XS',
     color: 'Amarillo',
-    marca: 'Stradivarius',
+    marca: 'Naf Naf',
     precio: 55000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Niño',
@@ -207,7 +224,7 @@ export const productos = [
     categoria: 'Blusas',
     talla: 'S',
     color: 'Negro',
-    marca: 'Zara',
+    marca: 'Esprit',
     precio: 82000,
     estadoPrenda: 'Muy bueno',
     disponiblePara: 'Mujer',
@@ -219,7 +236,7 @@ export const productos = [
     categoria: 'Camisas',
     talla: 'M',
     color: 'Blanco',
-    marca: 'Zara',
+    marca: 'Americanino',
     precio: 90000,
     estadoPrenda: 'Nuevo',
     disponiblePara: 'Mujer',
@@ -264,3 +281,20 @@ function coincideRangoPrecio(rangosFiltro, precioProducto) {
   if (!rangosFiltro || rangosFiltro.length === 0) return true;
   return rangosFiltro.some((rango) => precioProducto >= rango.min && precioProducto <= rango.max);
 }
+
+// ---------- 4. Ejemplo de uso ----------
+//
+// import { productos, filtrarProductos } from './catalogoProductos.js';
+//
+// const filtros = {
+//   categoria: ['Zapatos'],
+//   color: ['Azul', 'Rosa'],
+//   marca: [],
+//   talla: [],
+//   estadoPrenda: [],
+//   disponiblePara: [],
+//   precio: [],
+// };
+//
+// const resultado = filtrarProductos(productos, filtros);
+// console.log(resultado);

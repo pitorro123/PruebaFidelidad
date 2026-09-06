@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { RUTAS } from "../constants/rutas"
 import { useAuth } from "../hooks/useAuth";
 import Hero from "../components/pages/Landing/Hero/Hero";
-import Estadisticas from "../components/pages/Landing/Estadisticas/Estadisticas";
 import ProductosDestacados from "../components/pages/Landing/ProductosDestacados/ProductosDestacados";
 import ComoFunciona from "../components/pages/Landing/ComoFunciona/ComoFunciona";
 import MarcasDestacadas from "../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
@@ -78,14 +77,13 @@ function Home() {
                 imagenSrc={heroImg}
                 onExplorarCatalogo={handleExplorarCatalogo}
             />
-            <Estadisticas />
+            <MarcasDestacadas />
             <ProductosDestacados
                 onVerProducto={handleVerProducto}
                 onAgregarCarrito={handleAgregarCarrito}
                 onTrueque={handleTrueque}
             />
             < ComoFunciona />
-            < MarcasDestacadas />
             <section className={styles.ctaFidelidad}>
                 <h2 className={styles.ctaTitulo}>Programa de fidelidad</h2>
                 <p className={styles.ctaDescripcion}>
