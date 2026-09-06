@@ -94,34 +94,6 @@
     border-radius: 50%;
 }
 
-.contadorCarrito {
-    min-width: 14px;
-    height: 14px;
-
-    padding: 0 3px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    box-sizing: border-box;
-
-    position: absolute;
-    top: -2px;
-    right: -2px;
-
-    background-color: var(--color-clay);
-
-    color: var(--color-paper-2);
-
-    border-radius: 10px;
-
-    font-family: var(--font-body);
-    font-size: 9px;
-    font-weight: 700;
-    line-height: 1;
-}
-
 .accesoUsuario {
     display: flex;
     flex-direction: column;

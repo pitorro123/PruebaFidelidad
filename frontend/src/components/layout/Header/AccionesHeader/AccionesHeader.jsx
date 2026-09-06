@@ -1,4 +1,4 @@
-import { Bell, Plus, ShoppingCart, UserRound } from "lucide-react"
+import { Bell, Plus, UserRound } from "lucide-react"
 import styles from "./AccionesHeader.module.css"
 import PanelIdentificacion from "./PanelIdentificacion/PanelIdentificacion"
 import PanelNotificaciones from "./PanelNotificaciones/PanelNotificaciones"
@@ -19,9 +19,6 @@ const AccionesHeader = () => {
     const notificaciones = obtenerNotificaciones()
     const contenedorAcciones = useRef(null)
 
-    const cantidadCarrito = 10
-    const contadorCarrito = cantidadCarrito > 10 ? "10+" : cantidadCarrito
-
     function alternarMenuPerfil() {
         setPublicarMovilAbierto(false)
 
@@ -35,14 +32,6 @@ const AccionesHeader = () => {
 
         setPanelActivo(
             panelActivo === "notificaciones" ? null : "notificaciones"
-        )
-    }
-
-    function alternarCarrito() {
-        setPublicarMovilAbierto(false)
-
-        setPanelActivo(
-            panelActivo === "carrito" ? null : "carrito"
         )
     }
 
@@ -123,36 +112,6 @@ const AccionesHeader = () => {
                         <span className={styles.indicadorNotificacion}></span>
                     )}
                 </button>
-
-                {estaAutenticado ? (
-                    <NavLink
-                        to={RUTAS.CARRITO}
-                        className={styles.botonIcono}
-                        onClick={cerrarPanelActivo}>
-                        <ShoppingCart />
-
-                        {estaAutenticado && cantidadCarrito > 0 && (
-                            <span className={styles.contadorCarrito}>
-                                {contadorCarrito}
-                            </span>
-                        )}
-                    </NavLink>
-                ) : (
-                    <button
-                        className={`${styles.botonIcono} ${panelActivo === "carrito"
-                            ? styles.botonIconoActivo
-                            : ""
-                            }`}
-                        onClick={alternarCarrito}>
-                        <ShoppingCart />
-
-                        {estaAutenticado && cantidadCarrito > 0 && (
-                            <span className={styles.contadorCarrito}>
-                                {contadorCarrito}
-                            </span>
-                        )}
-                    </button>
-                )}
 
                 <button
                     className={`${styles.botonIcono} ${panelActivo === "perfil"
