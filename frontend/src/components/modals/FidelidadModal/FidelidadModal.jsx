@@ -6,6 +6,7 @@ import {
   obtenerCiudades,
   registrarClienteFidelidad,
 } from "../../../services/fidelidadService";
+import { agregarNotificacion } from "../../../services/notificacionesService";
 import styles from "./FidelidadModal.module.css";
 
 const VISTA_FORMULARIO = "formulario";
@@ -142,10 +143,16 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
         paisId: Number(formulario.paisId),
         marcaId: Number(formulario.marcaId),
       };
+      const marcaSeleccionada = marcas.find((m) => String(m.id) === String(formulario.marcaId))?.nombre || "";
       await registrarClienteFidelidad(datos);
       setRegistroExitoso({
         nombres: formulario.nombres.trim(),
-        marca: marcas.find((m) => String(m.id) === String(formulario.marcaId))?.nombre || "",
+        marca: marcaSeleccionada,
+      });
+      agregarNotificacion({
+        id: `fidelidad-${Date.now()}`,
+        referenciaVisual: "fidelidad",
+        descripcion: `Te registraste en el programa de fidelidad${marcaSeleccionada ? ` de ${marcaSeleccionada}` : ""}. Ya cuentas con tu 20% de descuento en tu primera compra.`,
       });
       setVista(VISTA_EXITO);
     } catch (e) {

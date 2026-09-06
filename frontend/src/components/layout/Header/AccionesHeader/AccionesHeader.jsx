@@ -3,8 +3,8 @@ import styles from "./AccionesHeader.module.css"
 import PanelIdentificacion from "./PanelIdentificacion/PanelIdentificacion"
 import PanelNotificaciones from "./PanelNotificaciones/PanelNotificaciones"
 import PanelPerfil from "./PanelPerfil/PanelPerfil"
-import { obtenerNotificaciones } from "../../../../services/notificacionesService"
-import { useEffect, useRef, useState } from "react"
+import { obtenerNotificaciones, suscribirseNotificaciones } from "../../../../services/notificacionesService"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { RUTAS } from "../../../../constants/rutas"
 import { useAuth } from "../../../../hooks/useAuth"
@@ -16,7 +16,7 @@ const AccionesHeader = () => {
     const [publicarMovilAbierto, setPublicarMovilAbierto] = useState(false)
 
     const estaAutenticado = autenticado
-    const notificaciones = obtenerNotificaciones()
+    const notificaciones = useSyncExternalStore(suscribirseNotificaciones, obtenerNotificaciones)
     const contenedorAcciones = useRef(null)
 
     function alternarMenuPerfil() {
