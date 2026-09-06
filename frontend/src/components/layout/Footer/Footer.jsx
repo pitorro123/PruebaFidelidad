@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom"
-import { metodosPago } from "../../../constants/metodosPago"
-import { categoriasMock } from "../../../data/categoriasMock"
+import { metodosPago, categoriasFooter, zonaTruequesFooter, legalFooter } from "../../../data/footerData"
 import Logo from "../Header/Logo/Logo"
 import styles from "./Footer.module.css"
 import { RUTAS } from "../../../constants/rutas"
-import { zonaTruequesMock } from "../../../data/zonaTruequesMock"
-import { legalMock } from "../../../data/legalMock"
 
 const Footer = () => {
     return (
@@ -33,7 +30,7 @@ const Footer = () => {
                 <div>
                     <h2 className={styles.titulosFooter}>Catálogo</h2>
                     <div className={styles.contenedoresFooter}>
-                        {categoriasMock.map((categoria) => (
+                        {categoriasFooter.map((categoria) => (
                             <Link to={`${RUTAS.CATALOGO}?busqueda=${categoria.nombre}`} key={categoria.id} className={styles.linksFooter}>
                                 {categoria.nombre}
                             </Link>
@@ -42,7 +39,7 @@ const Footer = () => {
                 </div>
                 <div className={styles.contenedoresFooter}>
                     <h2 className={styles.titulosFooter}>Zona Trueques</h2>
-                    {zonaTruequesMock.map((opcion) => (
+                    {zonaTruequesFooter.map((opcion) => (
                         opcion.tipo === "link"
                             ? <Link to={`${opcion.ruta}${opcion.hash}`} key={opcion.id} className={styles.linksFooter}>{opcion.nombre}</Link>
                             : <button type="button" key={opcion.id} className={styles.linksFooter}>{opcion.nombre}</button>
@@ -50,7 +47,7 @@ const Footer = () => {
                 </div>
                 <div className={styles.contenedoresFooter}>
                     <h2 className={styles.titulosFooter}>Legal</h2>
-                    {legalMock.map((opcion) => (
+                    {legalFooter.map((opcion) => (
                         <Link to={opcion.ruta} key={opcion.id} className={styles.linksFooter}>
                             {opcion.nombre}
                         </Link>
