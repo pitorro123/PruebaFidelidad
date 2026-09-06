@@ -1,0 +1,106 @@
+.tarjetaProducto {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.tarjetaProducto:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--accent-border);
+}
+
+.tarjetaProductoImagen {
+  overflow: hidden;
+}
+
+.tarjetaProductoImagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tarjetaProductoInfo {
+  padding: 12px;
+}
+
+.tarjetaProductoMarca {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 4px;
+}
+
+.tarjetaProductoNombre {
+  font-size: 16px;
+  margin: 0 0 6px;
+  color: var(--text-h);
+}
+
+.tarjetaProductoTalla,
+.tarjetaProductoColor {
+  font-size: 13px;
+  margin: 0 0 2px;
+}
+
+.tarjetaProductoPrecio {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 8px 0;
+}
+
+.tarjetaProductoVendedor {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  margin: 0;
+}
+
+.iconoVerificado {
+  color: var(--accent);
+}
+
+.tarjetaProductoCalificacion {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.iconoEstrella {
+  color: #f5a623;
+}
+
+.tarjetaProducto.vistaCuadricula .tarjetaProductoImagen {
+  height: 240px;
+}
+
+.tarjetaProducto.vistaCuadricula .tarjetaProductoInfo {
+  text-align: left;
+}
+
+.tarjetaProducto.vistaLista {
+  display: flex;
+  gap: 16px;
+}
+
+.tarjetaProducto.vistaLista .tarjetaProductoImagen {
+  flex-shrink: 0;
+  width: 160px;
+  height: 200px;
+}
+
+.tarjetaProducto.vistaLista .tarjetaProductoInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}

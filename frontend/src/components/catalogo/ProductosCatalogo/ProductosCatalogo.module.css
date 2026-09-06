@@ -1,0 +1,17 @@
+.productosCuadricula {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.productosLista {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sinResultados {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text);
+}

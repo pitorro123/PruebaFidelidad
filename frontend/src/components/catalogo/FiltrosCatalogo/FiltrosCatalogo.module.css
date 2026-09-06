@@ -1,0 +1,79 @@
+.filtrosCatalogo {
+  flex-shrink: 0;
+  width: 240px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--social-bg);
+}
+
+.filtrosCabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.filtrosTitulo {
+  font-size: 18px;
+  margin: 0;
+}
+
+.botonOcultarFiltros {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.botonOcultarFiltros:hover {
+  border-color: var(--accent-border);
+}
+
+.filtroSeccion {
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.filtroSeccionTitulo {
+  font-size: 14px;
+  margin: 0 0 10px;
+  color: var(--text-h);
+}
+
+.filtroOpciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtroOpcion {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.filtroOpcion:hover {
+  border-color: var(--accent-border);
+}
+
+.filtroOpcion.activa {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}

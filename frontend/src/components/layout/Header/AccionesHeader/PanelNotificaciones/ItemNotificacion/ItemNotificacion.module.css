@@ -1,0 +1,44 @@
+.itemNotificacion {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 5px;
+    padding: 0.5rem;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.itemNotificacion:hover {
+    background-color: var(--color-paper-2);
+}
+
+.itemNotificacion:hover .contenedorIcono {
+    background-color: var(--color-paper);
+}
+
+.contenedorIcono {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    background-color: var(--color-paper);
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+}
+
+.contenedorIcono svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.descripcionNotificacion {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-ink);
+}

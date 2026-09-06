@@ -1,0 +1,104 @@
+.controlesCatalogo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: var(--social-bg);
+}
+
+.filtrosActivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.indicadorFiltro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.indicadorFiltro.todos {
+  background: var(--accent);
+  color: #fff;
+}
+
+.botonCancelarFiltro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+}
+
+.controlesDerecha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.controlVista,
+.controlOrden {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.etiquetaControl {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.botonVista {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.botonVista.activo {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.ordenOpcion {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.ordenOpcion.activa {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}

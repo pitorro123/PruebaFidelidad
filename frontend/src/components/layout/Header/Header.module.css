@@ -1,0 +1,97 @@
+.header {
+    width: 100%;
+    min-height: 4.1rem;
+
+    padding: 0.7rem 3rem;
+
+    display: grid;
+    grid-template-columns: auto minmax(0, 30rem) auto;
+    grid-template-areas: "logo buscador acciones";
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 2rem;
+
+    box-sizing: border-box;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background-color: white;
+
+    border-bottom: 2px solid var(--color-line);
+
+    z-index: 9999;
+}
+
+.contenedorLogoHeader {
+    grid-area: logo;
+
+    display: flex;
+    align-items: center;
+
+    min-width: max-content;
+}
+
+.contenedorBuscadorHeader {
+    grid-area: buscador;
+
+    width: 100%;
+    min-width: 0;
+    max-width: 30rem;
+
+    justify-self: center;
+}
+
+.contenedorAccionesHeader {
+    grid-area: acciones;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    min-width: max-content;
+}
+
+@media (max-width: 1024px) {
+    .header {
+        padding: 0.7rem 1.5rem;
+
+        grid-template-columns: auto minmax(0, 1fr) auto;
+
+        column-gap: 1.25rem;
+    }
+
+    .contenedorBuscadorHeader {
+        max-width: 26rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        min-height: 7rem;
+
+        padding: 0.65rem 1rem;
+
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "logo acciones"
+            "buscador buscador";
+
+        column-gap: 0.75rem;
+        row-gap: 0.65rem;
+    }
+
+    .contenedorBuscadorHeader {
+        max-width: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.6rem 0.75rem;
+
+        column-gap: 0.5rem;
+    }
+}

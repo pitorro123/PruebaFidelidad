@@ -1,0 +1,172 @@
+/* Component styles for ReVuelta product pages */
+
+/* Detail page layout */
+.detalleProductoContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--color-paper);
+}
+
+.detalleGrid {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+/* Gallery */
+.galeriaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.imagenPrincipalWrapper {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--color-white);
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imagenPrincipal {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.miniaturasContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.miniaturaBtn {
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 0.25rem;
+  border-radius: 8px;
+  width: 70px;
+  height: 70px;
+}
+
+.miniaturaBtn.activa {
+  box-shadow: var(--shadow);
+  border-color: var(--accent);
+}
+
+.miniaturaImg { width:100%; height:100%; object-fit:cover; display:block }
+
+/* Info column */
+.infoProductoContainer {
+  padding: 1rem 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--color-white);
+  gap: 20px;
+}
+
+.productoMarca { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem }
+.productoTitulo { font-family: var(--font-heading); margin: 0.35rem 0; font-size: 28px }
+.productoVendedor { color: var(--text); font-size: 0.95rem; opacity: 0.7 }
+.productoPrecio { display:block; margin-top:0.5rem; font-weight:700; color:var(--text-h); font-size: 24px }
+
+.tallasGrid { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem }
+.seccionTallas { margin-top:1rem }
+.seccionTallas label, .seccionCantidad label { font-family: var(--font-mono); font-size:0.8rem; color:var(--accent); letter-spacing:0.05em }
+.tallaBtn { padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--accent-bg); color:var(--accent); font-weight:600; cursor:pointer; transition: background 0.2s, border-color 0.2s, color 0.2s }
+.tallaBtn:hover { border-color: var(--accent-border); }
+.tallaBtn.seleccionada { background: var(--accent); border-color: var(--accent); color: var(--bg) }
+
+.controlCantidad { display:flex; gap:0.5rem; align-items:center }
+.seccionCantidad { margin-top:1rem }
+.controlCantidad button { width:40px; height:36px; padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:var(--accent-bg); color:var(--accent); font-weight:700; cursor:pointer; transition: background 0.2s, border-color 0.2s }
+.controlCantidad button:hover:not(:disabled) { border-color: var(--accent-border); }
+.controlCantidad button:disabled { opacity:0.5; cursor:not-allowed }
+.controlCantidad span { min-width:32px; text-align:center; font-weight:700 }
+
+.accionesContainer { display:flex; gap:12px; margin-top:0.9rem }
+.btnCarrito {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight:600;
+  cursor:pointer;
+  transition: opacity 0.2s;
+}
+.btnCarrito:hover:not(:disabled) { opacity:0.9; }
+
+.btnCarrito.agregado { opacity:0.7; cursor:not-allowed }
+
+.btnTrueque {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  font-weight:600;
+  cursor:pointer;
+  transition: background 0.2s;
+}
+.btnTrueque:hover:not(:disabled) { background: var(--accent-bg); }
+.btnTrueque:disabled { opacity:0.5; cursor:not-allowed }
+
+/* Secciones */
+.seccionesContainer { margin-top:1rem }
+.tabsHeader { display:flex; gap:0.5rem; margin-bottom:0.75rem }
+.tabBtn { background: var(--accent-bg); border:1px solid var(--border); color:var(--accent); padding:0.5rem 0.75rem; border-radius:8px; font-weight:600; cursor:pointer; transition: background 0.2s, border-color 0.2s, color 0.2s }
+.tabBtn:hover { border-color: var(--accent-border); }
+.tabBtn.activa { background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.tabContent { padding:1rem; border-radius:12px; background:var(--bg) }
+
+/* Descripción detalles table */
+.detallesTable { width:100%; border-collapse:collapse; margin-top:1rem }
+.detallesTable td { padding:0.75rem 0; border-bottom:1px solid var(--border) }
+.detallesLabel { width:30%; color:var(--text); font-weight:500; opacity:0.7 }
+.detallesValue { width:70% }
+
+/* Descripción text style */
+.descripcionText {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0.5rem 0 0 0;
+  white-space: pre-line;
+}
+
+/* Productos relacionados */
+.relacionadosContainer { margin-top:1.25rem }
+.relacionadosTitulo { font-family: var(--font-heading); font-size:1rem; margin:0 0 0.75rem }
+.relacionadosGrid { display:flex; gap:20px; margin-top:0.75rem }
+.tarjetaProducto {
+  width:160px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  padding:0.5rem;
+  background: var(--color-white);
+  display:flex;
+  flex-direction:column;
+  min-height:340px;
+  box-shadow: var(--shadow);
+}
+.tarjetaImg { width:100%; height:180px; object-fit:cover; border-radius:8px; background: var(--color-white) }
+.tarjetaBody { padding-top:0.5rem; display:flex; flex-direction:column; gap:0.5rem; flex:1 }
+.tarjetaNombre { margin:0; }
+.tarjetaPrecio { color:var(--text-h); font-weight:700; margin-top:auto; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .detalleGrid { grid-template-columns: 1fr; }
+  .relacionadosGrid { overflow-x:auto; }
+}
+
+@media (max-width: 768px) {
+  .detalleGrid { grid-template-columns: 1fr; }
+}

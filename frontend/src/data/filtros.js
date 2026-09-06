@@ -1,0 +1,95 @@
+export const filtrosCatalogo = [
+  {
+    id: 'categoria',
+    nombre: 'Categoría',
+    opciones: [
+      { id: 'chaquetas', nombre: 'Chaquetas' },
+      { id: 'vestidos', nombre: 'Vestidos' },
+      { id: 'pantalones', nombre: 'Pantalones' },
+      { id: 'blusas', nombre: 'Blusas' },
+      { id: 'camisas', nombre: 'Camisas' },
+      { id: 'faldas', nombre: 'Faldas' },
+      { id: 'zapatos', nombre: 'Zapatos' },
+      { id: 'accesorios', nombre: 'Accesorios' },
+    ],
+  },
+  {
+    id: 'talla',
+    nombre: 'Talla',
+    opciones: [
+      { id: 'xs', nombre: 'XS' },
+      { id: 's', nombre: 'S' },
+      { id: 'm', nombre: 'M' },
+      { id: 'l', nombre: 'L' },
+      { id: 'xl', nombre: 'XL' },
+    ],
+  },
+  {
+    id: 'color',
+    nombre: 'Color',
+    opciones: [
+      { id: 'negro', nombre: 'Negro' },
+      { id: 'blanco', nombre: 'Blanco' },
+      { id: 'azul', nombre: 'Azul' },
+      { id: 'rojo', nombre: 'Rojo' },
+      { id: 'verde', nombre: 'Verde' },
+      { id: 'beige', nombre: 'Beige' },
+      { id: 'rosa', nombre: 'Rosa' },
+      { id: 'amarillo', nombre: 'Amarillo' },
+    ],
+  },
+  {
+    id: 'marca',
+    nombre: 'Marca',
+    opciones: [
+      { id: 'levis', nombre: 'Levis' },
+      { id: 'zara', nombre: 'Zara' },
+      { id: 'hm', nombre: 'H&M' },
+      { id: 'adidas', nombre: 'Adidas' },
+      { id: 'nike', nombre: 'Nike' },
+      { id: 'stradivarius', nombre: 'Stradivarius' },
+    ],
+  },
+  {
+    id: 'precio',
+    nombre: 'Precio',
+    opciones: [
+      { id: '0-50000', nombre: 'Hasta $50.000', min: 0, max: 50000 },
+      { id: '50000-100000', nombre: '$50.000 - $100.000', min: 50000, max: 100000 },
+      { id: '100000-200000', nombre: '$100.000 - $200.000', min: 100000, max: 200000 },
+      { id: '200000-500000', nombre: '$200.000 - $500.000', min: 200000, max: 500000 },
+    ],
+  },
+  {
+    id: 'estado',
+    nombre: 'Estado de la prenda',
+    opciones: [
+      { id: 'nuevo', nombre: 'Nuevo' },
+      { id: 'excelente', nombre: 'Excelente' },
+      { id: 'muy-bueno', nombre: 'Muy bueno' },
+      { id: 'bueno', nombre: 'Bueno' },
+    ],
+  },
+  {
+    id: 'disponiblePara',
+    nombre: 'Disponible para',
+    opciones: [
+      { id: 'mujer', nombre: 'Mujer' },
+      { id: 'hombre', nombre: 'Hombre' },
+      { id: 'nino', nombre: 'Niño' },
+      { id: 'unisex', nombre: 'Unisex' },
+    ],
+  },
+  {
+    id: 'vendedor',
+    nombre: 'Vendedor',
+    opciones: [
+      { id: 'laura-gomez', nombre: 'Laura Gómez' },
+      { id: 'carlos-ruiz', nombre: 'Carlos Ruiz' },
+      { id: 'andrea-torres', nombre: 'Andrea Torres' },
+      { id: 'miguel-herrera', nombre: 'Miguel Herrera' },
+      { id: 'valentina-rojas', nombre: 'Valentina Rojas' },
+      { id: 'andres-pineda', nombre: 'Andrés Pineda' },
+    ],
+  },
+]

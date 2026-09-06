@@ -1,0 +1,62 @@
+.footer {
+    margin: 0 auto;
+    padding: 1rem 3rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    box-sizing: border-box;
+
+    background-color: white;
+
+    border: 1px solid var(--color-line);
+
+    text-align: center;
+}
+
+.derechosReservados {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.contenedorRutas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.linksFooter {
+    margin: 0.45rem 0;
+
+    color: var(--color-ink);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.linksFooter:hover {
+    color: var(--color-moss);
+}
+
+@media (max-width: 640px) {
+    .footer {
+        padding: 1rem;
+
+        flex-direction: column;
+        justify-content: center;
+
+        gap: 0.5rem;
+    }
+
+    .contenedorRutas {
+        justify-content: center;
+
+        gap: 0.75rem;
+    }
+}
