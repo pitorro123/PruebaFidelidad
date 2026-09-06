@@ -5,7 +5,6 @@ import { useAuth } from "../hooks/useAuth";
 import Hero from "../components/pages/Landing/Hero/Hero";
 import ProductosDestacados from "../components/pages/Landing/ProductosDestacados/ProductosDestacados";
 import MarcasDestacadas from "../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
-import Testimonios from "../components/pages/Landing/Testimonios/Testimonios";
 import ProductModal from "../components/modals/ProductModal/ProductModal";
 import FidelidadModal from "../components/modals/FidelidadModal/FidelidadModal";
 import styles from "./Landing.module.css";
@@ -101,8 +100,6 @@ function Home() {
                 onAgregarCarrito={handleAgregarCarrito}
                 onTrueque={handleTrueque}
             />
-            < Testimonios />
-
             <ProductModal
                 producto={productoSeleccionado}
                 estaAbierto={modalAbierto && !!productoSeleccionado}
