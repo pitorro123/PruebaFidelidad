@@ -1,14 +1,13 @@
-import { Search, Star, UserRound } from "lucide-react"
+import { Search } from "lucide-react"
 import styles from "./BarraBusqueda.module.css"
 import { useEffect, useRef, useState } from "react"
-import { buscarPrendas, buscarVendedores } from "../../../../services/busquedaServicio"
+import { buscarPrendas } from "../../../../services/busquedaServicio"
 import { Link, useNavigate } from "react-router-dom"
 import { RUTAS } from "../../../../constants/rutas"
 
 const BarraBusqueda = () => {
     const [terminoBusqueda, setTerminoBusqueda] = useState("");
     const [resultadosPrendas, setResultadosPrendas] = useState(null);
-    const [resultadosVendedores, setResultadosVendedores] = useState(null);
     const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
     const navigate = useNavigate();
     const contenedorBuscador = useRef(null);
@@ -32,15 +31,11 @@ const BarraBusqueda = () => {
 
         if (termino === "") {
             setResultadosPrendas(null)
-            setResultadosVendedores(null)
             return
         }
 
         buscarPrendas(termino).then((prendas) => {
             if (ultimoTermino.current === termino) setResultadosPrendas(prendas)
-        })
-        buscarVendedores(termino).then((vendedores) => {
-            if (ultimoTermino.current === termino) setResultadosVendedores(vendedores)
         })
     }
     function manejarClickFuera(event) {
@@ -59,7 +54,6 @@ const BarraBusqueda = () => {
     function limpiarBusqueda() {
         setTerminoBusqueda("")
         setResultadosPrendas(null)
-        setResultadosVendedores(null)
         setMostrarSugerencias(false)
         ultimoTermino.current = ""
     }
@@ -76,7 +70,7 @@ const BarraBusqueda = () => {
                 <button type="submit" className={styles.contenedorIconoBusqueda}>
                     <Search className={styles.iconoBusqueda} />
                 </button>
-                <input className={styles.campoBusqueda} type="text" placeholder="Buscar prendas, vendedores..." value={terminoBusqueda} onChange={manejarCambioBusqueda} onFocus={mostrarSugerenciasAlEnfocar} />
+                <input className={styles.campoBusqueda} type="text" placeholder="Buscar prendas..." value={terminoBusqueda} onChange={manejarCambioBusqueda} onFocus={mostrarSugerenciasAlEnfocar} />
             </form>
             {terminoBusqueda.trim() !== "" && mostrarSugerencias && (
                 <div className={styles.resultadosBusqueda}>
@@ -90,22 +84,6 @@ const BarraBusqueda = () => {
                                 <Link key={titulo} to={`${RUTAS.CATALOGO}?busqueda=${titulo}`} className={styles.resultadoBusqueda} onClick={limpiarBusqueda}>
                                     <Search className={styles.iconoBusqueda2} />
                                     <p className={styles.tituloResultado}>{titulo}</p>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                    {resultadosVendedores !== null && resultadosVendedores.length > 0 && (
-                        <div>
-                            {resultadosVendedores.map((vendedor) => (
-                                <Link key={vendedor.idVendedor} to={`${RUTAS.CATALOGO}?vendedor=${vendedor.idVendedor}`} className={styles.resultadoBusqueda} onClick={limpiarBusqueda}>
-                                    <div className={styles.informacionVendedor}>
-                                        <UserRound className={styles.iconoBusqueda2} />
-                                        <p className={styles.tituloResultado}>{vendedor.nombreVendedor}</p>
-                                    </div>
-                                    <div className={styles.calificacionVendedor}>
-                                        <Star className={styles.iconoBusqueda2} />
-                                        <p className={styles.tituloResultado}>{vendedor.calificacionVendedor}</p>
-                                    </div>
                                 </Link>
                             ))}
                         </div>

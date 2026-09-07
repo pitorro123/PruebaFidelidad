@@ -64,16 +64,4 @@ export const filtrosCatalogo = [
     nombre: 'Disponible para',
     opciones: opcionesConId(opcionesFiltros.disponiblePara),
   },
-  {
-    id: 'vendedor',
-    nombre: 'Vendedor',
-    opciones: [
-      { id: 'laura-gomez', nombre: 'Laura Gómez' },
-      { id: 'carlos-ruiz', nombre: 'Carlos Ruiz' },
-      { id: 'andrea-torres', nombre: 'Andrea Torres' },
-      { id: 'miguel-herrera', nombre: 'Miguel Herrera' },
-      { id: 'valentina-rojas', nombre: 'Valentina Rojas' },
-      { id: 'andres-pineda', nombre: 'Andrés Pineda' },
-    ],
-  },
 ]

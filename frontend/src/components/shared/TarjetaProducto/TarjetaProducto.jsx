@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { FaCheckCircle, FaStar } from 'react-icons/fa'
 import { imagenPlaceholder } from '../../../utils/imagenes.js'
 import styles from './TarjetaProducto.module.css'
 
@@ -36,15 +35,6 @@ function TarjetaProducto({ producto, tipoVista = 'cuadricula', onSeleccionar }) 
         <p className={styles.tarjetaProductoColor}>{producto.color}</p>
         <p className={styles.tarjetaProductoPrecio}>
           ${producto.precio.toLocaleString('es-CO')}
-        </p>
-        <p className={styles.tarjetaProductoVendedor}>
-          {producto.vendedor}
-          {producto.verificado && (
-            <FaCheckCircle className={styles.iconoVerificado} aria-label="Verificado" />
-          )}
-          <span className={styles.tarjetaProductoCalificacion}>
-            <FaStar className={styles.iconoEstrella} /> {producto.calificacion}
-          </span>
         </p>
       </div>
     </article>

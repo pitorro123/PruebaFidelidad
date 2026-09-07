@@ -1,7 +1,7 @@
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth.js'
-import FormularioInicioSesion from '../components/autenticacion/FormularioInicioSesion/FormularioInicioSesion.jsx'
-import { RUTAS } from '../constants/rutas.js'
+import { useAuth } from '../../hooks/useAuth.js'
+import FormularioInicioSesion from '../../components/autenticacion/FormularioInicioSesion/FormularioInicioSesion.jsx'
+import { RUTAS } from '../../constants/rutas.js'
 import styles from './InicioSesion.module.css'
 
 // MKT-L01 — Inicio de sesión

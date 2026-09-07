@@ -55,29 +55,6 @@
   margin: 8px 0;
 }
 
-.tarjetaProductoVendedor {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  margin: 0;
-}
-
-.iconoVerificado {
-  color: var(--accent);
-}
-
-.tarjetaProductoCalificacion {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: auto;
-}
-
-.iconoEstrella {
-  color: #f5a623;
-}
-
 .tarjetaProducto.vistaCuadricula .tarjetaProductoImagen {
   height: 240px;
 }

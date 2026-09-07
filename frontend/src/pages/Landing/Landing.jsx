@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RUTAS } from "../constants/rutas"
-import { useAuth } from "../hooks/useAuth";
-import Hero from "../components/pages/Landing/Hero/Hero";
-import MarcasDestacadas from "../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
-import FidelidadModal from "../components/modals/FidelidadModal/FidelidadModal";
+import { RUTAS } from "../../constants/rutas"
+import { useAuth } from "../../hooks/useAuth";
+import Hero from "../../components/pages/Landing/Hero/Hero";
+import MarcasDestacadas from "../../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
+import FidelidadModal from "../../components/modals/FidelidadModal/FidelidadModal";
 import styles from "./Landing.module.css";
 
 const CLAVE_MODAL_FIDELIDAD_VISTO = 'revuelta_modal_fidelidad_visto';

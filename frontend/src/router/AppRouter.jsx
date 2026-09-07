@@ -2,11 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import MainLayout from "../layouts/MainLayout"
 import { RUTAS } from "../constants/rutas"
 import AuthLayout from "../layouts/AuthLayout"
-import Landing from "../pages/Landing"
-import Catalogo from "../pages/catalogo/Catalogo"
-import PaginaDetalleProducto from "../pages/PaginaDetalleProducto"
-import InicioSesion from "../pages/InicioSesion"
-import Registro from "../pages/Registro"
+import Landing from "../pages/Landing/Landing"
+import Catalogo from "../pages/catalogo/Catalogo/Catalogo"
+import PaginaDetalleProducto from "../pages/PaginaDetalleProducto/PaginaDetalleProducto"
+import InicioSesion from "../pages/InicioSesion/InicioSesion"
+import Registro from "../pages/Registro/Registro"
 
 const AppRouter = () => {
     return (

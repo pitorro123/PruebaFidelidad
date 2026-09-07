@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '../../../pages/DetalleProducto.module.css';
+import styles from '../../PaginaDetalleProducto/DetalleProducto.module.css';
 
 const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
   const tallasDisponibles = producto.tallas || [];
@@ -27,7 +27,6 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
     <div className={styles.infoProductoContainer}>
       <span className={styles.productoMarca}>{producto.marca}</span>
       <h1 className={styles.productoTitulo}>{producto.nombre}</h1>
-      <span className={styles.productoVendedor}>👤 {producto.vendedor} ★ {Number(producto.calificacion).toFixed(1)} </span>
       <span className={styles.productoPrecio}>${producto.precio.toLocaleString()}</span>
 
       {/* Selección de Talla */}

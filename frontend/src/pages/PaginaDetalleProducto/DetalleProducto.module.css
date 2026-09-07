@@ -73,7 +73,6 @@
 
 .productoMarca { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem }
 .productoTitulo { font-family: var(--font-heading); margin: 0.35rem 0; font-size: 28px }
-.productoVendedor { color: var(--text); font-size: 0.95rem; opacity: 0.7 }
 .productoPrecio { display:block; margin-top:0.5rem; font-weight:700; color:var(--text-h); font-size: 24px }
 
 .tallasGrid { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.5rem }

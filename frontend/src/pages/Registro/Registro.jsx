@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth.js'
-import FormularioRegistro from '../components/autenticacion/FormularioRegistro/FormularioRegistro.jsx'
-import { RUTAS } from '../constants/rutas.js'
+import { useAuth } from '../../hooks/useAuth.js'
+import FormularioRegistro from '../../components/autenticacion/FormularioRegistro/FormularioRegistro.jsx'
+import { RUTAS } from '../../constants/rutas.js'
 import styles from './Registro.module.css'
 
 // MKT-R01 — Registro de cuenta

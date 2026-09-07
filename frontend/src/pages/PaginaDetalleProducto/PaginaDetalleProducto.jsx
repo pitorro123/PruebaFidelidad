@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import InformacionProducto from '../components/pages/catalogo/InformacionProducto';
-import SeccionesProducto from '../components/pages/catalogo/SeccionesProducto';
-import ProductosRelacionados from '../components/pages/catalogo/ProductosRelacionados';
-import GaleriaProducto from '../components/pages/catalogo/GaleriaProducto';
-import { cargarProductos, obtenerProductoDetalle } from '../services/productosService';
-import { RUTAS } from '../constants/rutas.js';
+import InformacionProducto from '../catalogo/InformacionProducto/InformacionProducto';
+import SeccionesProducto from '../catalogo/SeccionesProducto/SeccionesProducto';
+import ProductosRelacionados from '../catalogo/ProductosRelacionados/ProductosRelacionados';
+import GaleriaProducto from '../catalogo/GaleriaProducto/GaleriaProducto';
+import { cargarProductos, obtenerProductoDetalle } from '../../services/productosService';
+import { RUTAS } from '../../constants/rutas.js';
 import styles from './DetalleProducto.module.css';
 
 const PaginaDetalleProducto = () => {

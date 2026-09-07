@@ -4,17 +4,6 @@ import { peticionJson } from './http.js'
 
 const POR_PAGINA = 8
 
-const VENDEDORES = [
-  'Laura Gómez',
-  'Carlos Ruiz',
-  'Andrea Torres',
-  'Miguel Herrera',
-  'Valentina Rojas',
-  'Andrés Pineda',
-]
-
-const elegir = (arreglo, id, semilla) => arreglo[(id * 7 + semilla) % arreglo.length]
-
 function mapASlug(texto) {
   return String(texto || '')
     .toLowerCase()
@@ -52,7 +41,6 @@ export function mapearProductoLocal(producto) {
     precio: producto.precio,
     estado: producto.estadoPrenda,
     disponiblePara: producto.disponiblePara,
-    vendedor: elegir(VENDEDORES, id, 7),
     calificacion: Math.round((4 + ((id * 5) % 10) / 10) * 10) / 10,
     verificado: id % 3 === 0,
     fechaPublicacion: new Date(Date.UTC(2026, 6, 1) + id * 86400000).toISOString(),
@@ -109,44 +97,6 @@ export async function obtenerProductoDetalle(id) {
 
 // ===== Filtrado, orden y paginación (local sobre la lista servida por el backend) =====
 
-const campoPorFiltro = {
-  categoria: 'categoria',
-  talla: 'tallas',
-  color: 'color',
-  marca: 'marca',
-  precio: 'precio',
-  estado: 'estado',
-  disponiblePara: 'disponiblePara',
-  vendedor: 'vendedor',
-}
-
-function coincideFiltro(producto, filtroId, opcion) {
-  const campo = campoPorFiltro[filtroId]
-  if (filtroId === 'precio') {
-    return producto.precio >= opcion.min && producto.precio <= opcion.max
-  }
-  const valor = producto[campo]
-  if (Array.isArray(valor)) {
-    return valor.some(
-      (v) => String(v).toLowerCase() === String(opcion.nombre).toLowerCase(),
-    )
-  }
-  return String(valor).toLowerCase() === String(opcion.nombre).toLowerCase()
-}
-
-function filtrarProductos(productosLista, filtrosActivos) {
-  return productosLista.filter((producto) =>
-    Object.entries(filtrosActivos).every(([filtroId, opcionIds]) => {
-      if (!opcionIds || opcionIds.length === 0) return true
-      const filtro = filtrosCatalogo.find((f) => f.id === filtroId)
-      return opcionIds.some((opcionId) => {
-        const opcion = filtro.opciones.find((o) => o.id === opcionId)
-        return opcion && coincideFiltro(producto, filtroId, opcion)
-      })
-    }),
-  )
-}
-
 function coincidirValorFiltro(valoresFiltro, valorProducto) {
   if (!valoresFiltro || valoresFiltro.length === 0) return true
   return valoresFiltro.includes(valorProducto)
@@ -180,7 +130,7 @@ function filtrosEnFormatoLocal(filtrosActivos) {
     precio: [],
   }
   for (const [filtroId, opcionIds] of Object.entries(filtrosActivos || {})) {
-    if (!opcionIds || opcionIds.length === 0 || filtroId === 'vendedor') continue
+    if (!opcionIds || opcionIds.length === 0) continue
     const filtro = filtrosCatalogo.find((f) => f.id === filtroId)
     if (!filtro) continue
     const opciones = filtro.opciones.filter((o) => opcionIds.includes(o.id))
@@ -237,10 +187,7 @@ export async function obtenerProductos({ filtrosActivos = {}, orden = 'mas_recie
   const crudos = await cargarProductos()
   const filtrados = filtrarPorCamposCrudos(crudos, filtrosEnFormatoLocal(filtrosActivos))
   const conBusqueda = filtrarPorBusqueda(filtrados, busqueda)
-  let mapeados = conBusqueda.map(mapearProductoLocal)
-  if (filtrosActivos.vendedor?.length) {
-    mapeados = filtrarProductos(mapeados, { vendedor: filtrosActivos.vendedor })
-  }
+  const mapeados = conBusqueda.map(mapearProductoLocal)
   const ordenados = ordenarProductos(mapeados, orden)
   return paginarProductos(ordenados, pagina)
 }

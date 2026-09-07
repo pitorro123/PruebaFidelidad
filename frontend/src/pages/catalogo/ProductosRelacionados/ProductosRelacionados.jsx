@@ -1,4 +1,4 @@
-import styles from '../../../pages/DetalleProducto.module.css';
+import styles from '../../PaginaDetalleProducto/DetalleProducto.module.css';
 
 const fallbackImagen = (texto) => {
   const color = '#8a5a3b';

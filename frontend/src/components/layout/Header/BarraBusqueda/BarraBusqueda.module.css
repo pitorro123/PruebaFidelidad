@@ -144,14 +144,6 @@
     font-weight: 600;
 }
 
-.vendedorResultado {
-    margin: 0;
-
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 400;
-}
-
 .iconoBusqueda2 {
     width: 1rem;
     height: 1rem;
@@ -161,20 +153,6 @@
     color: var(--color-ink);
 
     stroke-width: 2.3px;
-}
-
-.informacionVendedor {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.calificacionVendedor {
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
 }
 
 .fondoBusqueda {

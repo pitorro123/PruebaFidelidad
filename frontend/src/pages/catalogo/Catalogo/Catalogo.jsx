@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FaChevronRight } from 'react-icons/fa'
-import FiltrosCatalogo from '../../components/catalogo/FiltrosCatalogo/FiltrosCatalogo.jsx'
-import ControlesCatalogo from '../../components/catalogo/ControlesCatalogo/ControlesCatalogo.jsx'
-import ProductosCatalogo from '../../components/catalogo/ProductosCatalogo/ProductosCatalogo.jsx'
-import PaginacionCatalogo from '../../components/catalogo/PaginacionCatalogo/PaginacionCatalogo.jsx'
-import { filtrosCatalogo } from '../../data/filtros.js'
-import { obtenerProductos } from '../../services/productosService.js'
-import { RUTAS } from '../../constants/rutas.js'
+import FiltrosCatalogo from '../../../components/catalogo/FiltrosCatalogo/FiltrosCatalogo.jsx'
+import ControlesCatalogo from '../../../components/catalogo/ControlesCatalogo/ControlesCatalogo.jsx'
+import ProductosCatalogo from '../../../components/catalogo/ProductosCatalogo/ProductosCatalogo.jsx'
+import PaginacionCatalogo from '../../../components/catalogo/PaginacionCatalogo/PaginacionCatalogo.jsx'
+import { filtrosCatalogo } from '../../../data/filtros.js'
+import { obtenerProductos } from '../../../services/productosService.js'
+import { RUTAS } from '../../../constants/rutas.js'
 import styles from './Catalogo.module.css'
 
 function filtroInicialDesdeUrl(searchParams) {
@@ -21,12 +21,6 @@ function filtroInicialDesdeUrl(searchParams) {
         o.nombre.toLowerCase() === categoria.toLowerCase(),
     )
     if (opcion) inicial.categoria = [opcion.id]
-  }
-  const vendedor = searchParams.get('vendedor')
-  if (vendedor) {
-    const filtro = filtrosCatalogo.find((f) => f.id === 'vendedor')
-    const opcion = filtro.opciones.find((o) => o.id === vendedor)
-    if (opcion) inicial.vendedor = [opcion.id]
   }
   return inicial
 }
