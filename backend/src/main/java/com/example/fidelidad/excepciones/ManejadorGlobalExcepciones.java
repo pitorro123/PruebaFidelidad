@@ -12,11 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-/**
- * Manejador global de excepciones.
- * Convierte las excepciones de negocio y de infraestructura en respuestas
- * JSON consistentes { message } para el frontend, sin filtrar detalles internos.
- */
 @RestControllerAdvice
 public class ManejadorGlobalExcepciones {
 

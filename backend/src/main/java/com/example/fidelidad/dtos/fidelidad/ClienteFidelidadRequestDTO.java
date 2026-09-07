@@ -2,9 +2,6 @@ package com.example.fidelidad.dtos.fidelidad;
 
 import java.time.LocalDate;
 
-/**
- * Cuerpo de la peticion para inscribir a un cliente en el programa de fidelidad.
- */
 public record ClienteFidelidadRequestDTO(
         String email,
         Long tipoIdentificacionId,

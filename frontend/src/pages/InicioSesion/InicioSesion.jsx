@@ -4,15 +4,11 @@ import FormularioInicioSesion from '../../components/autenticacion/FormularioIni
 import { RUTAS } from '../../constants/rutas.js'
 import styles from './InicioSesion.module.css'
 
-// MKT-L01 — Inicio de sesión
-// Responsabilidad: Mostrar el título "Iniciar sesión", contener FormularioInicioSesion
-// y coordinar el resultado exitoso de la identificación con la capa de autenticación compartida.
 export default function InicioSesion() {
   const { usuario, autenticado, cerrarSesion } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Redirigir a la ruta previa de origen si venía de una acción protegida, o a la landing / por defecto
   const destino = location.state?.from?.pathname || RUTAS.LANDING_PAGE
 
   const handleInicioExitoso = () => {

@@ -16,10 +16,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Datos semilla para el perfil por defecto (H2 en memoria).
- * Con el perfil mysql los catalogos se cargan desde el script data.sql.
- */
 @Configuration
 public class CargaDatosIniciales {
 

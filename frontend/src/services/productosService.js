@@ -64,7 +64,6 @@ export function mapearProductoDetalle(producto) {
   }
 }
 
-// ===== Fuente de datos: backend (con cache en memoria) =====
 let cacheProductos = null
 let promesaCarga = null
 
@@ -94,8 +93,6 @@ export async function obtenerProductoDetalle(id) {
     .slice(0, 4)
   return detalle
 }
-
-// ===== Filtrado, orden y paginación (local sobre la lista servida por el backend) =====
 
 function coincidirValorFiltro(valoresFiltro, valorProducto) {
   if (!valoresFiltro || valoresFiltro.length === 0) return true

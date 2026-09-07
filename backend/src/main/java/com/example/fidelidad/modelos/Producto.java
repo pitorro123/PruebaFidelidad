@@ -13,10 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Producto del catalogo ReVuelta. La marca se referencia a la tabla marcas
- * (catalogo existente del programa de fidelidad).
- */
 @Entity
 @Table(name = "productos")
 @Getter

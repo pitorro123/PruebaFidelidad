@@ -14,8 +14,7 @@ const SeccionesProducto = ({ infoSecciones = {}, producto = {} }) => {
 
   const seccionActual = secciones.find(s => s.id === seccionActiva);
 
-  // Parsear detalles en pares label:value si vienen en formato de líneas
-  const parseDetalles = (texto = '') => {
+const parseDetalles = (texto = '') => {
     const lines = texto.split('\n').map(l => l.trim()).filter(Boolean);
     const map = {};
     lines.forEach(line => {

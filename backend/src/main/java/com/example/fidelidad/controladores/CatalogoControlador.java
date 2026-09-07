@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Endpoints de catalogos: alimentan las listas desplegables del formulario.
- */
 @RestController
 @RequestMapping("/api/catalogos")
 @Tag(name = "Catalogos", description = "Listas desplegables consultadas desde la base de datos")

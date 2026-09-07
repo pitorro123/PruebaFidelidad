@@ -13,9 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Catalogo de ciudades. Pertenece a un {@link Departamento}.
- */
 @Entity
 @Table(name = "ciudades")
 @Getter

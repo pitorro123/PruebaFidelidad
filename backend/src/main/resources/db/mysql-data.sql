@@ -1,10 +1,3 @@
--- ============================================================
--- Programa de fidelidad - Datos semilla MySQL
--- Alimenta las listas desplegables del formulario.
--- INSERT IGNORE: puede ejecutarse en cada arranque sin duplicar.
--- ============================================================
-
--- Marcas del grupo (6 del enunciado)
 INSERT IGNORE INTO marcas (id, nombre) VALUES
     (1, 'Americanino'),
     (2, 'American Eagle'),
@@ -13,7 +6,6 @@ INSERT IGNORE INTO marcas (id, nombre) VALUES
     (5, 'Naf Naf'),
     (6, 'Rifle');
 
--- Productos del catalogo ReVuelta (marca_id referencia las filas anteriores)
 INSERT IGNORE INTO productos (id, nombre, categoria, talla, color, marca_id, precio, estado_prenda, disponible_para, imagen) VALUES
     (1,  "Chaqueta de mezclilla negra Levi's", 'Chaquetas', 'M',  'Negro',  1, 180000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_01.png'),
     (2,  'Vestido rojo escote cruzado',        'Vestidos',   'S',  'Rojo',   5,  89000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_02.png'),
@@ -34,7 +26,6 @@ INSERT IGNORE INTO productos (id, nombre, categoria, talla, color, marca_id, pre
     (17, 'Blusa negra de encaje',              'Blusas',     'S',  'Negro',  4,  82000, 'Muy bueno', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_17.png'),
     (18, 'Camisa a rayas blanco y azul',       'Camisas',    'M',  'Blanco', 1,  90000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_18.png');
 
--- Tipos de identificacion
 INSERT IGNORE INTO tipos_identificacion (id, codigo, nombre) VALUES
     (1, 'CC',        'Cedula de Ciudadania'),
     (2, 'CE',        'Cedula de Extranjeria'),
@@ -42,13 +33,11 @@ INSERT IGNORE INTO tipos_identificacion (id, codigo, nombre) VALUES
     (4, 'PASAPORTE', 'Pasaporte'),
     (5, 'TI',        'Tarjeta de Identidad');
 
--- Paises
 INSERT IGNORE INTO paises (id, nombre) VALUES
     (1, 'Colombia'),
     (2, 'Mexico'),
     (3, 'Chile');
 
--- Departamentos de Colombia
 INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
     (1, 'Antioquia',        1),
     (2, 'Bogota D.C.',      1),
@@ -57,20 +46,17 @@ INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
     (5, 'Santander',        1),
     (6, 'Cundinamarca',     1);
 
--- Departamentos de Mexico
 INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
     (7,  'Ciudad de Mexico',   2),
     (8,  'Jalisco',            2),
     (9,  'Nuevo Leon',         2),
     (10, 'Estado de Mexico',   2);
 
--- Departamentos (regiones) de Chile
 INSERT IGNORE INTO departamentos (id, nombre, pais_id) VALUES
     (11, 'Region Metropolitana', 3),
     (12, 'Valparaiso',           3),
     (13, 'Biobio',               3);
 
--- Ciudades
 INSERT IGNORE INTO ciudades (id, nombre, departamento_id) VALUES
     (1,  'Medellin',     1),
     (2,  'Bello',        1),
@@ -90,8 +76,6 @@ INSERT IGNORE INTO ciudades (id, nombre, departamento_id) VALUES
     (16, 'Soacha',       6),
     (17, 'Chia',         6),
     (18, 'Zipaquiria',   6),
-
-    -- Ciudades de Mexico
     (19, 'Ciudad de Mexico', 7),
     (20, 'Guadalajara',      8),
     (21, 'Zapopan',          8),
@@ -99,8 +83,6 @@ INSERT IGNORE INTO ciudades (id, nombre, departamento_id) VALUES
     (23, 'Guadalupe',        9),
     (24, 'Ecatepec',        10),
     (25, 'Toluca',          10),
-
-    -- Ciudades de Chile
     (26, 'Santiago',    11),
     (27, 'Providencia', 11),
     (28, 'Las Condes',  11),

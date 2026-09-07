@@ -1,15 +1,8 @@
--- ============================================================
--- Programa de fidelidad - Esquema MySQL
--- Diseno normalizado: catalogos (tablas padre) + tabla transaccional
--- ============================================================
-
--- Catalogo: paises
 CREATE TABLE IF NOT EXISTS paises (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Catalogo: departamentos (pertenecen a un pais)
 CREATE TABLE IF NOT EXISTS departamentos (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -18,7 +11,6 @@ CREATE TABLE IF NOT EXISTS departamentos (
     CONSTRAINT fk_departamento_pais FOREIGN KEY (pais_id) REFERENCES paises (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Catalogo: ciudades (pertenecen a un departamento)
 CREATE TABLE IF NOT EXISTS ciudades (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(120) NOT NULL,
@@ -27,20 +19,17 @@ CREATE TABLE IF NOT EXISTS ciudades (
     CONSTRAINT fk_ciudad_departamento FOREIGN KEY (departamento_id) REFERENCES departamentos (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Catalogo: tipos de identificacion
 CREATE TABLE IF NOT EXISTS tipos_identificacion (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL UNIQUE,   -- CC, CE, NIT, PASAPORTE, TI
+    codigo VARCHAR(10) NOT NULL UNIQUE,
     nombre VARCHAR(60) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Catalogo: marcas del grupo
 CREATE TABLE IF NOT EXISTS marcas (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(80) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Catalogo: productos ReVuelta (referencia a la tabla marcas)
 CREATE TABLE IF NOT EXISTS productos (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL,
@@ -55,7 +44,6 @@ CREATE TABLE IF NOT EXISTS productos (
     CONSTRAINT fk_producto_marca FOREIGN KEY (marca_id) REFERENCES marcas (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabla transaccional: clientes inscritos al programa
 CREATE TABLE IF NOT EXISTS clientes_fidelidad (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     tipo_identificacion_id BIGINT NOT NULL,
@@ -77,7 +65,6 @@ CREATE TABLE IF NOT EXISTS clientes_fidelidad (
     CONSTRAINT fk_cliente_marca FOREIGN KEY (marca_id) REFERENCES marcas (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Tabla opcional: usuarios para el login simple
 CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(120) NOT NULL UNIQUE,

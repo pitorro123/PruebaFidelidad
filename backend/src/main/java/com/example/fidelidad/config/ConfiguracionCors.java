@@ -9,11 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Permite que el frontend consuma el backend (local y desplegado).
- * Origenes configurables con la propiedad app.cors.allowed-origins
- * (variable de entorno APP_CORS_ALLOWED_ORIGINS, separados por coma).
- */
 @Configuration
 public class ConfiguracionCors implements WebMvcConfigurer {
 

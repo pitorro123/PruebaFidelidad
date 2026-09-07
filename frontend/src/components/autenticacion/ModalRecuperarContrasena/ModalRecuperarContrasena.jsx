@@ -20,7 +20,6 @@ export default function ModalRecuperarContrasena({ visible, onCerrar }) {
     }
 
     setCargando(true)
-    // Simular petición
     await new Promise((resolve) => setTimeout(resolve, 300))
     setCargando(false)
     setEnviado(true)

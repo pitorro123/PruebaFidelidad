@@ -5,9 +5,6 @@ import FormularioRegistro from '../../components/autenticacion/FormularioRegistr
 import { RUTAS } from '../../constants/rutas.js'
 import styles from './Registro.module.css'
 
-// MKT-R01 — Registro de cuenta
-// Responsabilidad: Mostrar el título "Crear cuenta", contener FormularioRegistro
-// y coordinar el resultado exitoso con la capa de autenticación compartida.
 export default function Registro() {
   const { usuario, autenticado, cerrarSesion } = useAuth()
   const navigate = useNavigate()

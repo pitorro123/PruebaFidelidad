@@ -1,6 +1,3 @@
-/* Component styles for ReVuelta product pages */
-
-/* Detail page layout */
 .detalleProductoContainer {
   max-width: 1200px;
   margin: 0 auto;
@@ -16,7 +13,6 @@
   margin-bottom: 40px;
 }
 
-/* Gallery */
 .galeriaContainer {
   display: flex;
   flex-direction: column;
@@ -62,7 +58,6 @@
 
 .miniaturaImg { width:100%; height:100%; object-fit:cover; display:block }
 
-/* Info column */
 .infoProductoContainer {
   padding: 1rem 1rem;
   border-radius: 16px;
@@ -104,7 +99,6 @@
 
 .btnCarrito.agregado { opacity:0.7; cursor:not-allowed }
 
-/* Secciones */
 .seccionesContainer { margin-top:1rem }
 .tabsHeader { display:flex; gap:0.5rem; margin-bottom:0.75rem }
 .tabBtn { background: var(--accent-bg); border:1px solid var(--border); color:var(--accent); padding:0.5rem 0.75rem; border-radius:8px; font-weight:600; cursor:pointer; transition: background 0.2s, border-color 0.2s, color 0.2s }
@@ -112,13 +106,11 @@
 .tabBtn.activa { background:var(--accent); border-color:var(--accent); color:var(--bg); }
 .tabContent { padding:1rem; border-radius:12px; background:var(--bg) }
 
-/* Descripción detalles table */
 .detallesTable { width:100%; border-collapse:collapse; margin-top:1rem }
 .detallesTable td { padding:0.75rem 0; border-bottom:1px solid var(--border) }
 .detallesLabel { width:30%; color:var(--text); font-weight:500; opacity:0.7 }
 .detallesValue { width:70% }
 
-/* Descripción text style */
 .descripcionText {
   font-size: 1rem;
   line-height: 1.7;
@@ -127,7 +119,6 @@
   white-space: pre-line;
 }
 
-/* Productos relacionados */
 .relacionadosContainer { margin-top:1.25rem }
 .relacionadosTitulo { font-family: var(--font-heading); font-size:1rem; margin:0 0 0.75rem }
 .relacionadosGrid { display:flex; gap:20px; margin-top:0.75rem }
@@ -147,7 +138,6 @@
 .tarjetaNombre { margin:0; }
 .tarjetaPrecio { color:var(--text-h); font-weight:700; margin-top:auto; }
 
-/* Responsive */
 @media (max-width: 900px) {
   .detalleGrid { grid-template-columns: 1fr; }
   .relacionadosGrid { overflow-x:auto; }

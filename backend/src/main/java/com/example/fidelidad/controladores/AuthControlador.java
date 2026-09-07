@@ -14,11 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Autenticacion simple y opcional. El formulario de fidelidad es publico:
- * estos endpoints existen por si el equipo decide exigir login mas adelante.
- */
-@RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Autenticacion", description = "Registro y login simple (opcional)")
 public class AuthControlador {

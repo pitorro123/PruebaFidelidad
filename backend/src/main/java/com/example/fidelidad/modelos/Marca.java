@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Catalogo de marcas del grupo. Las 6 marcas del enunciado.
- */
 @Entity
 @Table(name = "marcas")
 @Getter

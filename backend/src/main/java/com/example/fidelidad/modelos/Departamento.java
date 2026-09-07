@@ -13,9 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Catalogo de departamentos. Pertenece a un {@link Pais}.
- */
 @Entity
 @Table(name = "departamentos")
 @Getter

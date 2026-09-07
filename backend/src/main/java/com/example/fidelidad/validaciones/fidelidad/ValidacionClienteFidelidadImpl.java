@@ -2,7 +2,6 @@ package com.example.fidelidad.validaciones.fidelidad;
 
 import com.example.fidelidad.modelos.Ciudad;
 import com.example.fidelidad.modelos.Departamento;
-import com.example.fidelidad.modelos.Marca;
 import com.example.fidelidad.modelos.Pais;
 import com.example.fidelidad.modelos.TipoIdentificacion;
 import com.example.fidelidad.repositorios.ICiudadRepositorio;
@@ -58,8 +57,9 @@ public class ValidacionClienteFidelidadImpl implements IValidacionClienteFidelid
         TipoIdentificacion tipo = repositorioTipoIdentificacion.findById(tipoIdentificacionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de identificacion invalido"));
 
-        Marca marca = repositorioMarca.findById(marcaId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca invalida"));
+        if (!repositorioMarca.existsById(marcaId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca invalida");
+        }
 
         Pais pais = repositorioPais.findById(paisId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pais invalido"));

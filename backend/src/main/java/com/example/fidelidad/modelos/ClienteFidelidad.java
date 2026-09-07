@@ -16,12 +16,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-/**
- * Registro de un cliente inscrito al programa de fidelidad de una marca.
- *
- * Unico por (tipo de identificacion, numero de identificacion, marca):
- * una misma persona no debe inscribirse dos veces a la misma marca.
- */
 @Entity
 @Table(
     name = "clientes_fidelidad",

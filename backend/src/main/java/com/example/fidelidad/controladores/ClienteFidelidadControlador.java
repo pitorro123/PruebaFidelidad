@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Endpoints del registro de clientes al programa de fidelidad.
- */
 @RestController
 @RequestMapping("/api/clientes-fidelidad")
 @Tag(name = "Clientes Fidelidad", description = "Inscripcion al programa de fidelidad")

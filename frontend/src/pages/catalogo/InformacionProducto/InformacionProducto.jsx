@@ -29,7 +29,6 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
       <h1 className={styles.productoTitulo}>{producto.nombre}</h1>
       <span className={styles.productoPrecio}>${producto.precio.toLocaleString()}</span>
 
-      {/* Selección de Talla */}
       <div className={styles.seccionTallas}>
         <label>TALLA</label>
         <div className={styles.tallasGrid}>
@@ -45,7 +44,6 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
         </div>
       </div>
 
-      {/* Control de Cantidad */}
       <div className={styles.seccionCantidad}>
         <label>CANTIDAD</label>
         <div className={styles.controlCantidad}>
@@ -55,7 +53,6 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
         </div>
       </div>
 
-      {/* Botones de Acción */}
       <div className={styles.accionesContainer}>
         <button 
           onClick={handleAgregarClick} 

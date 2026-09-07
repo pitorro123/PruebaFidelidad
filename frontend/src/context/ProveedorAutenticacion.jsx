@@ -6,11 +6,6 @@ import {
   CLAVE_TOKEN_STORAGE,
 } from '../data/authMock.js'
 
-/**
- * Proveedor técnico de autenticación compartida para ReVuelta (MKT-L01 / MKT-R01).
- * El inicio de sesión con correo/contraseña consulta el backend real (POST /api/auth/login);
- * el inicio con Google permanece simulado porque el backend no expone OAuth.
- */
 const derivarNombre = (correo) => {
   const parte = String(correo || '').split('@')[0] || 'Usuario'
   return parte.charAt(0).toUpperCase() + parte.slice(1)
@@ -29,9 +24,6 @@ export function ProveedorAutenticacion({ children }) {
     }
   })
 
-  /**
-   * Inicia sesión con correo y contraseña contra el backend real.
-   */
   const iniciarSesion = async ({ correo, contrasena }) => {
     try {
       const respuesta = await peticionJson('/auth/login', {
@@ -66,9 +58,6 @@ export function ProveedorAutenticacion({ children }) {
     }
   }
 
-  /**
-   * Cierra la sesión activa y elimina los datos de persistencia.
-   */
   const cerrarSesion = () => {
     setUsuario(null)
     localStorage.removeItem(CLAVE_SESION_STORAGE)

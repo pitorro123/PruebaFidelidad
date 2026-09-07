@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Endpoints del catalogo de productos ReVuelta.
- */
 @RestController
 @RequestMapping("/api/productos")
 @Tag(name = "Productos", description = "Catalogo de productos consultado desde la base de datos")

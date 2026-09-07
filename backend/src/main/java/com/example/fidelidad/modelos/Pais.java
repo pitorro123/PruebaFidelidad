@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Catalogo de paises. Se consulta para el desplegable "Pais" del formulario.
- */
 @Entity
 @Table(name = "paises")
 @Getter

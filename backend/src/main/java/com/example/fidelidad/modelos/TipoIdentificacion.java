@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Catalogo de tipos de identificacion: CC, CE, NIT, Pasaporte, TI.
- */
 @Entity
 @Table(name = "tipos_identificacion")
 @Getter

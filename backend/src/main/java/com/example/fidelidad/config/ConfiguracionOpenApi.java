@@ -6,14 +6,6 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Portada de la documentacion interactiva de la API.
- *
- * Con la aplicacion corriendo:
- *   - Interfaz Swagger : http://localhost:8080/swagger-ui.html
- *   - JSON OpenAPI     : http://localhost:8080/v3/api-docs
- *   - Consola H2       : http://localhost:8080/h2-console
- */
 @Configuration
 @OpenAPIDefinition(
     info = @Info(

@@ -10,9 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Usuario para el login simple y opcional (el formulario de fidelidad es publico).
- */
 @Entity
 @Table(name = "usuarios")
 @Getter

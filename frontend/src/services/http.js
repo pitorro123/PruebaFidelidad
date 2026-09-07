@@ -18,7 +18,6 @@ export async function peticionJson(url, opciones = {}) {
       const detalle = cuerpo?.message || cuerpo?.error || cuerpo?.detail
       if (detalle) mensaje = detalle
     } catch {
-      // ignorar si el cuerpo no es JSON
     }
     throw new Error(mensaje)
   }
