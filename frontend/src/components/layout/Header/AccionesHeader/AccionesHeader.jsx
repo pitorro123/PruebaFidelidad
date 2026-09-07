@@ -1,4 +1,4 @@
-import { Bell, Plus, UserRound } from "lucide-react"
+import { Bell, UserRound } from "lucide-react"
 import styles from "./AccionesHeader.module.css"
 import PanelIdentificacion from "./PanelIdentificacion/PanelIdentificacion"
 import PanelNotificaciones from "./PanelNotificaciones/PanelNotificaciones"
@@ -13,36 +13,21 @@ const AccionesHeader = () => {
     const { autenticado, usuario, cerrarSesion: cerrarSesionContexto } = useAuth()
     const navigate = useNavigate()
     const [panelActivo, setPanelActivo] = useState(null)
-    const [publicarMovilAbierto, setPublicarMovilAbierto] = useState(false)
 
     const estaAutenticado = autenticado
     const notificaciones = useSyncExternalStore(suscribirseNotificaciones, obtenerNotificaciones)
     const contenedorAcciones = useRef(null)
 
     function alternarMenuPerfil() {
-        setPublicarMovilAbierto(false)
-
         setPanelActivo(
             panelActivo === "perfil" ? null : "perfil"
         )
     }
 
     function alternarNotificaciones() {
-        setPublicarMovilAbierto(false)
-
         setPanelActivo(
             panelActivo === "notificaciones" ? null : "notificaciones"
         )
-    }
-
-    function alternarPublicarMovil() {
-        setPanelActivo(null)
-        setPublicarMovilAbierto(!publicarMovilAbierto)
-    }
-
-    function abrirIdentificacionPublicar() {
-        setPublicarMovilAbierto(false)
-        setPanelActivo("publicar")
     }
 
     const manejarClickFuera = useCallback((event) => {
@@ -53,21 +38,12 @@ const AccionesHeader = () => {
         ) {
             setPanelActivo(null)
         }
-
-        if (
-            publicarMovilAbierto &&
-            contenedorAcciones.current &&
-            !contenedorAcciones.current.contains(event.target)
-        ) {
-            setPublicarMovilAbierto(false)
-        }
-    }, [panelActivo, publicarMovilAbierto])
+    }, [panelActivo])
 
     function cerrarSesion() {
         cerrarSesionContexto()
 
         setPanelActivo(null)
-        setPublicarMovilAbierto(false)
 
         navigate(RUTAS.LANDING_PAGE)
     }
@@ -104,39 +80,6 @@ const AccionesHeader = () => {
                     onClick={alternarMenuPerfil}>
                     <UserRound />
                 </button>
-
-                {!estaAutenticado && (
-                    <button
-                        className={styles.botonPublicar}
-                        onClick={abrirIdentificacionPublicar}>
-                        <Plus className={styles.iconoBotonPublicar} />
-                        Publicar prenda
-                    </button>
-                )}
-
-                {!estaAutenticado && (
-                    <div className={styles.publicarFlotante}>
-                        {publicarMovilAbierto && (
-                            <button
-                                type="button"
-                                className={styles.accionPublicarMovil}
-                                onClick={abrirIdentificacionPublicar}>
-                                <Plus className={styles.iconoBotonPublicar} />
-                                Publicar prenda
-                            </button>
-                        )}
-
-                        <button
-                            type="button"
-                            className={`${styles.botonPublicarFlotante} ${publicarMovilAbierto
-                                ? styles.botonPublicarFlotanteAbierto
-                                : ""
-                                }`}
-                            onClick={alternarPublicarMovil}>
-                            <Plus />
-                        </button>
-                    </div>
-                )}
 
                 {estaAutenticado && panelActivo === "perfil" && (
                     <PanelPerfil

@@ -47,15 +47,6 @@ function Catalogo() {
   const [paginaActual, setPaginaActual] = useState(1)
   const [filtrosVisibles, setFiltrosVisibles] = useState(true)
   const [paginasCargadas, setPaginasCargadas] = useState({})
-  const [fidelidadInscrito, setFidelidadInscrito] = useState(
-    () => localStorage.getItem("fidelidadInscrito") === "true",
-  )
-
-  useEffect(() => {
-    const alInscribirse = () => setFidelidadInscrito(true)
-    window.addEventListener("fidelidad:inscrito", alInscribirse)
-    return () => window.removeEventListener("fidelidad:inscrito", alInscribirse)
-  }, [])
 
   useEffect(() => {
     const clave = claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda)
@@ -129,14 +120,17 @@ function Catalogo() {
     <div className={styles.catalogo}>
       <div className={styles.catalogoCabecera}>
         <h1 className={styles.catalogoTitulo}>Catálogo</h1>
-        {fidelidadInscrito && (
-          <div className={styles.avisoFidelidad}>
-            <span className={styles.avisoFidelidadBadge}>Club fidelidad</span>
-            <p className={styles.avisoFidelidadTexto}>
-              Aprovecha tu <strong>20% de descuento</strong> en tu primera compra.
-            </p>
-          </div>
-        )}
+        <div className={styles.cabeceraControles}>
+          <ControlesCatalogo
+            filtros={filtrosCatalogo}
+            filtrosActivos={filtrosActivos}
+            ordenSeleccionado={ordenSeleccionado}
+            tipoVista={tipoVista}
+            onCancelarFiltro={manejarCancelarFiltro}
+            onCambiarOrden={manejarCambiarOrden}
+            onCambiarVista={manejarCambiarVista}
+          />
+        </div>
       </div>
       <div className={styles.catalogoCuerpo}>
         {filtrosVisibles ? (
@@ -158,15 +152,6 @@ function Catalogo() {
           </button>
         )}
         <div className={styles.catalogoContenido}>
-          <ControlesCatalogo
-            filtros={filtrosCatalogo}
-            filtrosActivos={filtrosActivos}
-            ordenSeleccionado={ordenSeleccionado}
-            tipoVista={tipoVista}
-            onCancelarFiltro={manejarCancelarFiltro}
-            onCambiarOrden={manejarCambiarOrden}
-            onCambiarVista={manejarCambiarVista}
-          />
           <ProductosCatalogo
             productos={productosPagina}
             tipoVista={tipoVista}
