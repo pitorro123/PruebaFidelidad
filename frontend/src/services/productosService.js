@@ -1,6 +1,6 @@
-import { productos, filtrarProductos as filtrarProductosLocal } from '../data/catalogoProductos'
 import { filtrosCatalogo } from '../data/filtros.js'
 import { imagenPlaceholder } from '../utils/imagenes.js'
+import { peticionJson } from './http.js'
 
 const POR_PAGINA = 8
 
@@ -76,6 +76,39 @@ export function mapearProductoDetalle(producto) {
   }
 }
 
+// ===== Fuente de datos: backend (con cache en memoria) =====
+let cacheProductos = null
+let promesaCarga = null
+
+export async function cargarProductos() {
+  if (cacheProductos) return cacheProductos
+  if (!promesaCarga) {
+    promesaCarga = peticionJson('/productos')
+      .then((lista) => {
+        cacheProductos = lista
+        return lista
+      })
+      .finally(() => {
+        promesaCarga = null
+      })
+  }
+  return promesaCarga
+}
+
+export async function obtenerProductoDetalle(id) {
+  const crudos = await cargarProductos()
+  const crudo = crudos.find((p) => String(p.id) === String(id))
+  if (!crudo) throw new Error('Producto no encontrado')
+  const detalle = mapearProductoDetalle(crudo)
+  detalle.relacionados = crudos
+    .filter((p) => String(p.id) !== String(id))
+    .map(mapearProductoLocal)
+    .slice(0, 4)
+  return detalle
+}
+
+// ===== Filtrado, orden y paginación (local sobre la lista servida por el backend) =====
+
 const campoPorFiltro = {
   categoria: 'categoria',
   talla: 'tallas',
@@ -111,6 +144,28 @@ function filtrarProductos(productosLista, filtrosActivos) {
         return opcion && coincideFiltro(producto, filtroId, opcion)
       })
     }),
+  )
+}
+
+function coincidirValorFiltro(valoresFiltro, valorProducto) {
+  if (!valoresFiltro || valoresFiltro.length === 0) return true
+  return valoresFiltro.includes(valorProducto)
+}
+
+function coincidirRangoPrecio(rangosFiltro, precioProducto) {
+  if (!rangosFiltro || rangosFiltro.length === 0) return true
+  return rangosFiltro.some((rango) => precioProducto >= rango.min && precioProducto <= rango.max)
+}
+
+function filtrarPorCamposCrudos(listaCruda, filtrosSeleccionados) {
+  return listaCruda.filter((producto) =>
+    coincidirValorFiltro(filtrosSeleccionados.categoria, producto.categoria) &&
+    coincidirValorFiltro(filtrosSeleccionados.talla, producto.talla) &&
+    coincidirValorFiltro(filtrosSeleccionados.color, producto.color) &&
+    coincidirValorFiltro(filtrosSeleccionados.marca, producto.marca) &&
+    coincidirValorFiltro(filtrosSeleccionados.estadoPrenda, producto.estadoPrenda) &&
+    coincidirValorFiltro(filtrosSeleccionados.disponiblePara, producto.disponiblePara) &&
+    coincidirRangoPrecio(filtrosSeleccionados.precio, producto.precio),
   )
 }
 
@@ -169,17 +224,6 @@ function paginarProductos(productosLista, pagina) {
   }
 }
 
-export async function obtenerProductos({ filtrosActivos = {}, orden = 'mas_recientes', pagina = 1, busqueda = '' }) {
-  const filtrados = filtrarProductosLocal(productos, filtrosEnFormatoLocal(filtrosActivos))
-  const conBusqueda = filtrarPorBusqueda(filtrados, busqueda)
-  let mapeados = conBusqueda.map(mapearProductoLocal)
-  if (filtrosActivos.vendedor?.length) {
-    mapeados = filtrarProductos(mapeados, { vendedor: filtrosActivos.vendedor })
-  }
-  const ordenados = ordenarProductos(mapeados, orden)
-  return paginarProductos(ordenados, pagina)
-}
-
 function filtrarPorBusqueda(listaProductos, busqueda) {
   const termino = String(busqueda || '').trim().toLowerCase()
   if (!termino) return listaProductos
@@ -187,4 +231,16 @@ function filtrarPorBusqueda(listaProductos, busqueda) {
     [producto.nombre, producto.marca, producto.categoria, producto.color]
       .some((campo) => String(campo || '').toLowerCase().includes(termino)),
   )
+}
+
+export async function obtenerProductos({ filtrosActivos = {}, orden = 'mas_recientes', pagina = 1, busqueda = '' }) {
+  const crudos = await cargarProductos()
+  const filtrados = filtrarPorCamposCrudos(crudos, filtrosEnFormatoLocal(filtrosActivos))
+  const conBusqueda = filtrarPorBusqueda(filtrados, busqueda)
+  let mapeados = conBusqueda.map(mapearProductoLocal)
+  if (filtrosActivos.vendedor?.length) {
+    mapeados = filtrarProductos(mapeados, { vendedor: filtrosActivos.vendedor })
+  }
+  const ordenados = ordenarProductos(mapeados, orden)
+  return paginarProductos(ordenados, pagina)
 }

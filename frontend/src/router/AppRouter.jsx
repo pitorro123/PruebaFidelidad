@@ -14,12 +14,6 @@ const AppRouter = () => {
             <Routes>
                 <Route element={<MainLayout />}>
                     <Route path={RUTAS.LANDING_PAGE} element={< Landing />}/>
-                    <Route path={RUTAS.PERFIL} element={null}/>
-                    <Route path={RUTAS.PEDIDOS} element={null}/>
-                    <Route path={RUTAS.TRUEQUES} element={null}/>
-                    <Route path={RUTAS.CAMPANAS_DESCUENTOS} element={null}/>
-                    <Route path={RUTAS.CARRITO} element={null}/>
-                    <Route path={RUTAS.PUBLICAR_PRENDA} element={null}/>
                     <Route path={RUTAS.CATALOGO} element={<Catalogo />}/>
                     <Route path={RUTAS.DETALLE_PRODUCTO} element={<PaginaDetalleProducto />}/>
                 </Route>

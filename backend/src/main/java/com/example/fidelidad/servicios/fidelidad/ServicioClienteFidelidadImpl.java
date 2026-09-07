@@ -60,19 +60,22 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
 
         ClienteFidelidad cliente = new ClienteFidelidad();
         cliente.setEmail(dto.email().trim().toLowerCase());
-        cliente.setTipoIdentificacion(repositorioTipo.findById(dto.tipoIdentificacionId()).orElseThrow());
+        cliente.setTipoIdentificacion(repositorioTipo.findById(dto.tipoIdentificacionId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de identificacion invalido")));
         cliente.setNumeroIdentificacion(dto.numeroIdentificacion().trim());
         cliente.setNombres(dto.nombres().trim());
         cliente.setApellidos(dto.apellidos().trim());
         cliente.setFechaNacimiento(dto.fechaNacimiento());
         cliente.setDireccion(dto.direccion().trim());
 
-        Ciudad ciudad = repositorioCiudad.findById(dto.ciudadId()).orElseThrow();
+        Ciudad ciudad = repositorioCiudad.findById(dto.ciudadId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ciudad invalida"));
         cliente.setCiudad(ciudad);
         cliente.setDepartamento(ciudad.getDepartamento());
         cliente.setPais(ciudad.getDepartamento().getPais());
 
-        cliente.setMarca(repositorioMarca.findById(dto.marcaId()).orElseThrow());
+        cliente.setMarca(repositorioMarca.findById(dto.marcaId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca invalida")));
         cliente.setFechaRegistro(LocalDate.now());
 
         ClienteFidelidad guardado = repositorioCliente.save(cliente);
@@ -82,13 +85,20 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
 
     @Override
     public VerificacionResponseDTO verificar(VerificacionRequestDTO dto) {
+        Long tipoId = dto.tipoIdentificacionId();
+        Long marcaId = dto.marcaId();
+        String numero = dto.numeroIdentificacion();
+        if (tipoId == null || marcaId == null || numero == null || numero.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Datos de verificacion incompletos");
+        }
         boolean inscrito = repositorioCliente
                 .existsByTipoIdentificacionIdAndNumeroIdentificacionAndMarcaId(
-                        dto.tipoIdentificacionId(), dto.numeroIdentificacion().trim(), dto.marcaId());
+                        tipoId, numero.trim(), marcaId);
         return new VerificacionResponseDTO(inscrito, null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ClienteFidelidadResponseDTO> listar() {
         return repositorioCliente.findAllByOrderByFechaRegistroDesc().stream()
                 .map(this::toResponse)
@@ -96,6 +106,7 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ClienteFidelidadResponseDTO buscarPorId(Long id) {
         ClienteFidelidad cliente = repositorioCliente.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));

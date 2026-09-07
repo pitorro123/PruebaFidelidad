@@ -12,6 +12,7 @@ const BarraBusqueda = () => {
     const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
     const navigate = useNavigate();
     const contenedorBuscador = useRef(null);
+    const ultimoTermino = useRef("");
     const manejarBusqueda = (e) => {
         e.preventDefault();
         if (terminoBusqueda.trim() === "") {
@@ -23,22 +24,24 @@ const BarraBusqueda = () => {
     }
     const manejarCambioBusqueda = (e) => {
         const valorBusqueda = e.target.value
+        const termino = valorBusqueda.trim()
 
         setTerminoBusqueda(valorBusqueda)
+        setMostrarSugerencias(termino !== "")
+        ultimoTermino.current = termino
 
-        setMostrarSugerencias(valorBusqueda.trim() !== "")
+        if (termino === "") {
+            setResultadosPrendas(null)
+            setResultadosVendedores(null)
+            return
+        }
 
-        setResultadosPrendas(
-            valorBusqueda.trim() === ""
-                ? null
-                : buscarPrendas(valorBusqueda)
-        )
-
-        setResultadosVendedores(
-            valorBusqueda.trim() === ""
-                ? null
-                : buscarVendedores(valorBusqueda)
-        )
+        buscarPrendas(termino).then((prendas) => {
+            if (ultimoTermino.current === termino) setResultadosPrendas(prendas)
+        })
+        buscarVendedores(termino).then((vendedores) => {
+            if (ultimoTermino.current === termino) setResultadosVendedores(vendedores)
+        })
     }
     function manejarClickFuera(event) {
         if (
@@ -58,6 +61,7 @@ const BarraBusqueda = () => {
         setResultadosPrendas(null)
         setResultadosVendedores(null)
         setMostrarSugerencias(false)
+        ultimoTermino.current = ""
     }
     useEffect(() => {
         document.addEventListener("mousedown", manejarClickFuera)

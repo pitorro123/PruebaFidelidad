@@ -1,9 +1,8 @@
 import { LogOut, UserRound } from "lucide-react"
 import styles from "./PanelPerfil.module.css"
-import opcionesMenuPerfil from "../OpcionMenuPerfil/opcionesMenuPerfil"
 import OpcionMenuPerfil from "../OpcionMenuPerfil/OpcionMenuPerfil"
 
-const PanelPerfil = ({ cerrarPanelActivo, cerrarSesion }) => {
+const PanelPerfil = ({ usuario, cerrarSesion }) => {
     return (
         <div className={styles.menuPerfil}>
             <div className={styles.datosPerfil}>
@@ -13,24 +12,10 @@ const PanelPerfil = ({ cerrarPanelActivo, cerrarSesion }) => {
                     </div>
 
                     <p className={styles.nombreUsuario}>
-                        Nombre Usuario
+                        {usuario?.correo || "Nombre Usuario"}
                     </p>
                 </div>
-
-                <span className={styles.puntosUsuario}>
-                    0 pts
-                </span>
             </div>
-
-            {opcionesMenuPerfil.map((opcion) => (
-                <OpcionMenuPerfil
-                    key={opcion.id}
-                    Icono={opcion.Icono}
-                    texto={opcion.texto}
-                    ruta={opcion.ruta}
-                    onClick={cerrarPanelActivo}
-                />
-            ))}
 
             <div className={styles.contenedorCerrarSesion}>
                 <OpcionMenuPerfil

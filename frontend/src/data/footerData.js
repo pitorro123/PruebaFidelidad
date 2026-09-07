@@ -16,8 +16,7 @@ export const categoriasFooter = [
 ]
 
 export const zonaTruequesFooter = [
-    { id: 1, nombre: "Propón Trueque", ruta: RUTAS.CATALOGO, hash: "", tipo: "link" },
-    { id: 2, nombre: "Puntos de Acopio", ruta: null, hash: "", tipo: "modal" },
+    { id: 1, nombre: "Propón Trueque", ruta: RUTAS.CATALOGO, hash: "" },
 ]
 
 export const legalFooter = [

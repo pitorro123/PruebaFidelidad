@@ -24,10 +24,15 @@ public class ServicioAuthImpl implements IServicioAuth {
         this.servicioCorreo = servicioCorreo;
     }
 
+    private static final String PATRON_EMAIL = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
+
     @Override
     public RegistroResponseDTO registrar(RegistroRequestDTO dto) {
         if (dto.email() == null || dto.email().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El email es obligatorio");
+        }
+        if (!dto.email().matches(PATRON_EMAIL)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El formato del email es invalido");
         }
         if (dto.password() == null || dto.password().length() < 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contrasena debe tener al menos 6 caracteres");
@@ -52,7 +57,7 @@ public class ServicioAuthImpl implements IServicioAuth {
         Usuario usuario = repositorioUsuario.findByEmailIgnoreCase(dto.email() == null ? "" : dto.email().trim())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas"));
 
-        if (!passwordEncoder.matches(dto.password(), usuario.getPasswordHash())) {
+        if (dto.password() == null || !passwordEncoder.matches(dto.password(), usuario.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales invalidas");
         }
         return new LoginResponseDTO(true, usuario.getEmail(), "Autenticado correctamente");

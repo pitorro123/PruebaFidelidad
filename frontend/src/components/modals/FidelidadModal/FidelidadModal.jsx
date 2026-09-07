@@ -159,6 +159,7 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
         descripcion: `Te registraste en el programa de fidelidad${marcaSeleccionada ? ` de ${marcaSeleccionada}` : ""}. Ya cuentas con tu 20% de descuento en tu primera compra.`,
       });
       localStorage.setItem("fidelidadInscrito", "true");
+      window.dispatchEvent(new CustomEvent("fidelidad:inscrito"));
       setVista(VISTA_EXITO);
     } catch (e) {
       setError(e?.message || "Ocurrio un error al registrar. Intentalo de nuevo.");

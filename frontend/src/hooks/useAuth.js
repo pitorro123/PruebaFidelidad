@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext.js'
 
 /**
  * Hook para acceder a la capa de autenticación compartida.
- * Expone el contrato: { usuario, autenticado, cargando, iniciarSesion, iniciarSesionConGoogle, cerrarSesion, registrarUsuario }
+ * Expone el contrato: { usuario, autenticado, iniciarSesion, cerrarSesion }
  */
 export function useAuth() {
   const contexto = useContext(AuthContext)
@@ -14,5 +14,3 @@ export function useAuth() {
 
   return contexto
 }
-
-export default useAuth

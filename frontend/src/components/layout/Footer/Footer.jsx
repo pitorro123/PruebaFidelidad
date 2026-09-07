@@ -40,9 +40,7 @@ const Footer = () => {
                 <div className={styles.contenedoresFooter}>
                     <h2 className={styles.titulosFooter}>Zona Trueques</h2>
                     {zonaTruequesFooter.map((opcion) => (
-                        opcion.tipo === "link"
-                            ? <Link to={`${opcion.ruta}${opcion.hash}`} key={opcion.id} className={styles.linksFooter}>{opcion.nombre}</Link>
-                            : <button type="button" key={opcion.id} className={styles.linksFooter}>{opcion.nombre}</button>
+                        <Link to={`${opcion.ruta}${opcion.hash}`} key={opcion.id} className={styles.linksFooter}>{opcion.nombre}</Link>
                     ))}
                 </div>
                 <div className={styles.contenedoresFooter}>

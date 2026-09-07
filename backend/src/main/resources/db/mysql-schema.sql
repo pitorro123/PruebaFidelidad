@@ -40,6 +40,21 @@ CREATE TABLE IF NOT EXISTS marcas (
     nombre VARCHAR(80) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Catalogo: productos ReVuelta (referencia a la tabla marcas)
+CREATE TABLE IF NOT EXISTS productos (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL,
+    categoria VARCHAR(60) NOT NULL,
+    talla VARCHAR(10) NOT NULL,
+    color VARCHAR(40) NOT NULL,
+    marca_id BIGINT NOT NULL,
+    precio INT NOT NULL,
+    estado_prenda VARCHAR(30) NOT NULL,
+    disponible_para VARCHAR(30) NOT NULL,
+    imagen VARCHAR(500) NOT NULL,
+    CONSTRAINT fk_producto_marca FOREIGN KEY (marca_id) REFERENCES marcas (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Tabla transaccional: clientes inscritos al programa
 CREATE TABLE IF NOT EXISTS clientes_fidelidad (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

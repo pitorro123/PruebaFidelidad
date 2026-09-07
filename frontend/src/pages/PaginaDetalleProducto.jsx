@@ -1,69 +1,54 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import InformacionProducto from '../components/pages/catalogo/InformacionProducto';
 import SeccionesProducto from '../components/pages/catalogo/SeccionesProducto';
 import ProductosRelacionados from '../components/pages/catalogo/ProductosRelacionados';
 import GaleriaProducto from '../components/pages/catalogo/GaleriaProducto';
-import { fetchProductById, fetchProducts } from '../services/productService';
+import { cargarProductos, obtenerProductoDetalle } from '../services/productosService';
+import { RUTAS } from '../constants/rutas.js';
 import styles from './DetalleProducto.module.css';
 
 const PaginaDetalleProducto = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadProducto = async (id) => {
-    try {
-      setLoading(true);
-      const p = await fetchProductById(id);
-      const relacionados = await fetchProducts(1000);
-      p.relacionados = relacionados.filter(r => r.id !== p.id).slice(0, 4);
-
-      setProducto(p);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError('No se pudo cargar el producto');
-    } finally {
-      setLoading(false);
-    }
+  const obtenerPrimerProducto = async () => {
+    const lista = await cargarProductos();
+    const first = Array.isArray(lista) && lista.length > 0 ? lista[0] : null;
+    if (!first) throw new Error('No hay productos disponibles para mostrar');
+    return obtenerProductoDetalle(first.id);
   };
 
   useEffect(() => {
-    const loadInitial = async () => {
-      const path = window.location.pathname || '';
-      const match = path.match(/\/producto\/(\d+)/);
-      if (match) {
-        const id = Number(match[1]);
-        await loadProducto(id);
-        return;
-      }
-
-      // Si no hay id en la URL, intentamos obtener el primer producto disponible
+    let activo = true;
+    const resolver = async () => {
       try {
-        const lista = await fetchProducts(10);
-        const first = Array.isArray(lista) && lista.length > 0 ? lista[0] : null;
-        const id = first ? first.id : null;
-        if (id) await loadProducto(id);
-        else setError('No hay productos disponibles para mostrar');
-      } catch (e) {
-        console.error(e);
-        setError('No se pudo cargar el producto');
+        const p = id ? await obtenerProductoDetalle(Number(id)) : await obtenerPrimerProducto();
+        if (!activo) return;
+        setProducto(p);
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        if (activo) setError('No se pudo cargar el producto');
+      } finally {
+        if (activo) setLoading(false);
       }
     };
-
-    loadInitial();
-
-    const onPop = () => {
-      const m = window.location.pathname.match(/\/producto\/(\d+)/);
-      const i = m ? Number(m[1]) : null;
-      if (i) (async () => { await loadProducto(i); })();
+    resolver();
+    return () => {
+      activo = false;
     };
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
-  }, []);
+  }, [id]);
 
   const handleAgregarCarrito = (prod, talla, cantidad) => {
     console.log('Agregado al carrito:', { prod, talla, cantidad });
+  };
+
+  const handleSeleccionarRelacionado = (productoId) => {
+    navigate(`${RUTAS.DETALLE_PRODUCTO.replace(':id', String(productoId))}`)
   };
 
   if (loading) return <div>Cargando producto...</div>;
@@ -84,10 +69,7 @@ const PaginaDetalleProducto = () => {
 
       <ProductosRelacionados
         productos={producto.relacionados}
-        onSeleccionarProducto={(id) => {
-          window.history.pushState({ productoId: id }, '', `/producto/${id}`);
-          loadProducto(id);
-        }}
+        onSeleccionarProducto={handleSeleccionarRelacionado}
       />
     </div>
   );

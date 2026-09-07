@@ -11,15 +11,24 @@ import { RUTAS } from '../../constants/rutas.js'
 import styles from './Catalogo.module.css'
 
 function filtroInicialDesdeUrl(searchParams) {
+  const inicial = {}
   const categoria = searchParams.get('categoria')
-  if (!categoria || categoria === 'todos') return {}
-  const filtro = filtrosCatalogo.find((f) => f.id === 'categoria')
-  const opcion = filtro.opciones.find(
-    (o) =>
-      o.id === categoria ||
-      o.nombre.toLowerCase() === categoria.toLowerCase(),
-  )
-  return opcion ? { categoria: [opcion.id] } : {}
+  if (categoria && categoria !== 'todos') {
+    const filtro = filtrosCatalogo.find((f) => f.id === 'categoria')
+    const opcion = filtro.opciones.find(
+      (o) =>
+        o.id === categoria ||
+        o.nombre.toLowerCase() === categoria.toLowerCase(),
+    )
+    if (opcion) inicial.categoria = [opcion.id]
+  }
+  const vendedor = searchParams.get('vendedor')
+  if (vendedor) {
+    const filtro = filtrosCatalogo.find((f) => f.id === 'vendedor')
+    const opcion = filtro.opciones.find((o) => o.id === vendedor)
+    if (opcion) inicial.vendedor = [opcion.id]
+  }
+  return inicial
 }
 
 function claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda) {
@@ -44,6 +53,15 @@ function Catalogo() {
   const [paginaActual, setPaginaActual] = useState(1)
   const [filtrosVisibles, setFiltrosVisibles] = useState(true)
   const [paginasCargadas, setPaginasCargadas] = useState({})
+  const [fidelidadInscrito, setFidelidadInscrito] = useState(
+    () => localStorage.getItem("fidelidadInscrito") === "true",
+  )
+
+  useEffect(() => {
+    const alInscribirse = () => setFidelidadInscrito(true)
+    window.addEventListener("fidelidad:inscrito", alInscribirse)
+    return () => window.removeEventListener("fidelidad:inscrito", alInscribirse)
+  }, [])
 
   useEffect(() => {
     const clave = claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda)
@@ -112,8 +130,6 @@ function Catalogo() {
     paginasCargadas[claveConsulta(filtrosActivos, ordenSeleccionado, paginaActual, busqueda)]
   const productosPagina = paginaCargada?.productos || []
   const totalPaginas = paginaCargada?.totalPaginas || 1
-
-  const [fidelidadInscrito] = useState(() => localStorage.getItem("fidelidadInscrito") === "true")
 
   return (
     <div className={styles.catalogo}>

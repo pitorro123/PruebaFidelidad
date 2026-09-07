@@ -1,4 +1,17 @@
-import { opcionesFiltros } from './catalogoProductos.js'
+const opcionesFiltros = {
+  categoria: ['Chaquetas', 'Vestidos', 'Pantalones', 'Blusas', 'Camisas', 'Faldas', 'Zapatos', 'Accesorios'],
+  talla: ['XS', 'S', 'M', 'L', 'XL'],
+  color: ['Negro', 'Blanco', 'Azul', 'Rojo', 'Verde', 'Beige', 'Rosa', 'Amarillo'],
+  marca: ['Americanino', 'American Eagle', 'Chevignon', 'Esprit', 'Naf Naf', 'Rifle'],
+  precio: [
+    { etiqueta: 'Hasta $50.000', min: 0, max: 50000 },
+    { etiqueta: '$50.000 - $100.000', min: 50000, max: 100000 },
+    { etiqueta: '$100.000 - $200.000', min: 100000, max: 200000 },
+    { etiqueta: '$200.000 - $500.000', min: 200000, max: 500000 },
+  ],
+  estadoPrenda: ['Nuevo', 'Excelente', 'Muy bueno', 'Bueno'],
+  disponiblePara: ['Mujer', 'Hombre', 'Niño', 'Unisex'],
+}
 
 const aSlug = (texto) =>
   String(texto)

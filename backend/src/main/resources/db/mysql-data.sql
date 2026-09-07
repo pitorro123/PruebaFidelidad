@@ -13,6 +13,27 @@ INSERT IGNORE INTO marcas (id, nombre) VALUES
     (5, 'Naf Naf'),
     (6, 'Rifle');
 
+-- Productos del catalogo ReVuelta (marca_id referencia las filas anteriores)
+INSERT IGNORE INTO productos (id, nombre, categoria, talla, color, marca_id, precio, estado_prenda, disponible_para, imagen) VALUES
+    (1,  "Chaqueta de mezclilla negra Levi's", 'Chaquetas', 'M',  'Negro',  1, 180000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_01.png'),
+    (2,  'Vestido rojo escote cruzado',        'Vestidos',   'S',  'Rojo',   5,  89000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_02.png'),
+    (3,  'Jeans azules corte mom fit',         'Pantalones', 'M',  'Azul',   6, 120000, 'Excelente', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_03.png'),
+    (4,  'Blusa beige manga abullonada',       'Blusas',     'S',  'Beige',  4,  75000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_04.png'),
+    (5,  'Polo blanco Adidas',                 'Camisas',    'L',  'Blanco', 2, 130000, 'Nuevo', 'Hombre', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_05.png'),
+    (6,  'Falda plisada rosada',               'Faldas',     'S',  'Rosa',   5,  68000, 'Muy bueno', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_06.png'),
+    (7,  'Tenis Nike azules con gorra Adidas beige', 'Zapatos', 'M', 'Azul', 2, 175000, 'Nuevo', 'Hombre', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_07.png'),
+    (8,  'Pantalón cargo negro',               'Pantalones', 'M',  'Negro',  3,  95000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_08.png'),
+    (9,  'Chaqueta cortavientos roja Nike',    'Chaquetas',  'M',  'Rojo',   2, 160000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_09.png'),
+    (10, 'Camisa de cuadros azul',             'Camisas',    'L',  'Azul',   3,  89000, 'Muy bueno', 'Hombre', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_10.png'),
+    (11, 'Minifalda de mezclilla blanca',      'Faldas',     'S',  'Blanco', 6,  78000, 'Excelente', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_11.png'),
+    (12, 'Tenis Nike rosados',                 'Zapatos',    'M',  'Rosa',   2, 145000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_12.png'),
+    (13, 'Cinturón de cuero negro',            'Accesorios', 'M',  'Negro',  3,  45000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_13.png'),
+    (14, 'Pantalón cargo verde',               'Pantalones', 'M',  'Verde',  1,  98000, 'Nuevo', 'Unisex', 'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_14.png'),
+    (15, 'Trench coat beige',                  'Chaquetas',  'M',  'Beige',  4, 320000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_15.png'),
+    (16, 'Vestido amarillo infantil',          'Vestidos',   'XS', 'Amarillo', 5, 55000, 'Nuevo', 'Niño',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_16.png'),
+    (17, 'Blusa negra de encaje',              'Blusas',     'S',  'Negro',  4,  82000, 'Muy bueno', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_17.png'),
+    (18, 'Camisa a rayas blanco y azul',       'Camisas',    'M',  'Blanco', 1,  90000, 'Nuevo', 'Mujer',  'https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_18.png');
+
 -- Tipos de identificacion
 INSERT IGNORE INTO tipos_identificacion (id, codigo, nombre) VALUES
     (1, 'CC',        'Cedula de Ciudadania'),

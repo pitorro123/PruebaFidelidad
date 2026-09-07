@@ -4,13 +4,13 @@ import PanelIdentificacion from "./PanelIdentificacion/PanelIdentificacion"
 import PanelNotificaciones from "./PanelNotificaciones/PanelNotificaciones"
 import PanelPerfil from "./PanelPerfil/PanelPerfil"
 import { obtenerNotificaciones, suscribirseNotificaciones } from "../../../../services/notificacionesService"
-import { useEffect, useRef, useState, useSyncExternalStore } from "react"
-import { NavLink, useNavigate } from "react-router-dom"
+import { useEffect, useRef, useState, useSyncExternalStore, useCallback } from "react"
+import { useNavigate } from "react-router-dom"
 import { RUTAS } from "../../../../constants/rutas"
 import { useAuth } from "../../../../hooks/useAuth"
 
 const AccionesHeader = () => {
-    const { autenticado, iniciarSesion, cerrarSesion: cerrarSesionContexto } = useAuth()
+    const { autenticado, usuario, cerrarSesion: cerrarSesionContexto } = useAuth()
     const navigate = useNavigate()
     const [panelActivo, setPanelActivo] = useState(null)
     const [publicarMovilAbierto, setPublicarMovilAbierto] = useState(false)
@@ -45,7 +45,7 @@ const AccionesHeader = () => {
         setPanelActivo("publicar")
     }
 
-    function manejarClickFuera(event) {
+    const manejarClickFuera = useCallback((event) => {
         if (
             panelActivo !== null &&
             contenedorAcciones.current &&
@@ -61,7 +61,7 @@ const AccionesHeader = () => {
         ) {
             setPublicarMovilAbierto(false)
         }
-    }
+    }, [panelActivo, publicarMovilAbierto])
 
     function cerrarSesion() {
         cerrarSesionContexto()
@@ -72,34 +72,17 @@ const AccionesHeader = () => {
         navigate(RUTAS.LANDING_PAGE)
     }
 
-    function activarSesionPrueba() {
-        iniciarSesion({ correo: "usuario@ejemplo.com", contrasena: "password123" })
-        setPanelActivo(null)
-    }
-
-    const cerrarPanelActivo = () => {
-        setPanelActivo(null)
-        setPublicarMovilAbierto(false)
-    }
-
     useEffect(() => {
         document.addEventListener("mousedown", manejarClickFuera)
 
         return () => {
             document.removeEventListener("mousedown", manejarClickFuera)
         }
-    }, [panelActivo, publicarMovilAbierto])
+    }, [manejarClickFuera])
 
     return (
         <>
             <div className={styles.accionesHeader} ref={contenedorAcciones}>
-                {import.meta.env.DEV && (
-                    <button
-                        type="button"
-                        className={styles.botonSesionPrueba}
-                        onClick={activarSesionPrueba}>
-                    </button>
-                )}
                 <button
                     className={`${styles.botonIcono} ${panelActivo === "notificaciones"
                         ? styles.botonIconoActivo
@@ -122,15 +105,7 @@ const AccionesHeader = () => {
                     <UserRound />
                 </button>
 
-                {estaAutenticado ? (
-                    <NavLink
-                        to={RUTAS.PUBLICAR_PRENDA}
-                        className={styles.botonPublicar}
-                        onClick={cerrarPanelActivo}>
-                        <Plus className={styles.iconoBotonPublicar} />
-                        Publicar prenda
-                    </NavLink>
-                ) : (
+                {!estaAutenticado && (
                     <button
                         className={styles.botonPublicar}
                         onClick={abrirIdentificacionPublicar}>
@@ -139,17 +114,9 @@ const AccionesHeader = () => {
                     </button>
                 )}
 
-                <div className={styles.publicarFlotante}>
-                    {publicarMovilAbierto && (
-                        estaAutenticado ? (
-                            <NavLink
-                                to={RUTAS.PUBLICAR_PRENDA}
-                                className={styles.accionPublicarMovil}
-                                onClick={cerrarPanelActivo}>
-                                <Plus className={styles.iconoBotonPublicar} />
-                                Publicar prenda
-                            </NavLink>
-                        ) : (
+                {!estaAutenticado && (
+                    <div className={styles.publicarFlotante}>
+                        {publicarMovilAbierto && (
                             <button
                                 type="button"
                                 className={styles.accionPublicarMovil}
@@ -157,23 +124,23 @@ const AccionesHeader = () => {
                                 <Plus className={styles.iconoBotonPublicar} />
                                 Publicar prenda
                             </button>
-                        )
-                    )}
+                        )}
 
-                    <button
-                        type="button"
-                        className={`${styles.botonPublicarFlotante} ${publicarMovilAbierto
-                            ? styles.botonPublicarFlotanteAbierto
-                            : ""
-                            }`}
-                        onClick={alternarPublicarMovil}>
-                        <Plus />
-                    </button>
-                </div>
+                        <button
+                            type="button"
+                            className={`${styles.botonPublicarFlotante} ${publicarMovilAbierto
+                                ? styles.botonPublicarFlotanteAbierto
+                                : ""
+                                }`}
+                            onClick={alternarPublicarMovil}>
+                            <Plus />
+                        </button>
+                    </div>
+                )}
 
                 {estaAutenticado && panelActivo === "perfil" && (
                     <PanelPerfil
-                        cerrarPanelActivo={cerrarPanelActivo}
+                        usuario={usuario}
                         cerrarSesion={cerrarSesion} />
                 )}
 
