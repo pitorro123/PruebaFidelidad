@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS transacciones_puntos (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     cliente_id BIGINT NOT NULL,
-    marca_id BIGINT NOT NULL,
+    marca_id BIGINT NULL,
     tipo VARCHAR(20) NOT NULL,
     puntos INT NOT NULL,
     referencia VARCHAR(60),

@@ -59,7 +59,7 @@ public class ServicioPuntosImpl implements IServicioPuntos {
     public ConsultarPuntosResponseDTO canjear(CanjearPuntosRequestDTO dto) {
         if (dto.tipoIdentificacionId() == null || dto.numeroIdentificacion() == null
                 || dto.numeroIdentificacion().isBlank()
-                || dto.marcaId() == null || dto.puntos() == null || dto.puntos() <= 0) {
+                || dto.puntos() == null || dto.puntos() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Datos de canje invalidos");
         }
         ClienteFidelidad cliente = buscarPorDocumento(dto.tipoIdentificacionId(), dto.numeroIdentificacion());
@@ -70,7 +70,7 @@ public class ServicioPuntosImpl implements IServicioPuntos {
         if (dto.puntos() > cliente.getSaldoPuntos()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Saldo de puntos insuficiente");
         }
-        Marca marca = repositorioMarca.findById(dto.marcaId())
+        Marca marca = dto.marcaId() == null ? null : repositorioMarca.findById(dto.marcaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca invalida"));
         cliente.setSaldoPuntos(cliente.getSaldoPuntos() - dto.puntos());
         repositorioCliente.save(cliente);
@@ -120,7 +120,7 @@ public class ServicioPuntosImpl implements IServicioPuntos {
         return new MovimientoPuntosDTO(
                 t.getId(),
                 t.getTipo().name(),
-                t.getMarca().getNombre(),
+                t.getMarca() == null ? "Puntos SUMAS" : t.getMarca().getNombre(),
                 t.getPuntos(),
                 t.getReferencia(),
                 t.getFecha());

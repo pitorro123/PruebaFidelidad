@@ -194,11 +194,13 @@ function PuntosModal({ estaAbierto, onCerrar }) {
     const base = {
       tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
       numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
-      marcaId: Number(formularioAccion.marcaId),
     };
-    if (!formularioAccion.marcaId) {
+    if (accion === "acumular" && !formularioAccion.marcaId) {
       setError("Selecciona la marca.");
       return;
+    }
+    if (formularioAccion.marcaId) {
+      base.marcaId = Number(formularioAccion.marcaId);
     }
 
     setEjecutando(true);
@@ -422,26 +424,28 @@ function PuntosModal({ estaAbierto, onCerrar }) {
 
             {accion && (
               <form className={styles.formularioAccion} onSubmit={manejarAccion}>
-                <div className={styles.grupo}>
-                  <label className={styles.etiqueta} htmlFor="accionMarca">
-                    Marca
-                  </label>
-                  <select
-                    id="accionMarca"
-                    className={styles.select}
-                    value={formularioAccion.marcaId}
-                    onChange={(e) =>
-                      setFormularioAccion((prev) => ({ ...prev, marcaId: e.target.value }))
-                    }
-                  >
-                    <option value="">Selecciona...</option>
-                    {marcas.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {accion === "acumular" && (
+                  <div className={styles.grupo}>
+                    <label className={styles.etiqueta} htmlFor="accionMarca">
+                      Marca
+                    </label>
+                    <select
+                      id="accionMarca"
+                      className={styles.select}
+                      value={formularioAccion.marcaId}
+                      onChange={(e) =>
+                        setFormularioAccion((prev) => ({ ...prev, marcaId: e.target.value }))
+                      }
+                    >
+                      <option value="">Selecciona...</option>
+                      {marcas.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 {accion === "acumular" ? (
                   <div className={styles.grupo}>

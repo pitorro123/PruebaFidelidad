@@ -32,8 +32,8 @@ public class TransaccionPuntos {
     @JoinColumn(name = "cliente_id", nullable = false)
     private ClienteFidelidad cliente;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "marca_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "marca_id")
     private Marca marca;
 
     @Enumerated(EnumType.STRING)
