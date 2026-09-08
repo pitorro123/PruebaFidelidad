@@ -9,13 +9,23 @@ import {
   obtenerSocioFidelidad,
   usarCupon,
   guardarCuponAplicado,
+  obtenerSaldoDescuento,
+  guardarSaldoDescuento,
 } from "../../../services/fidelidadService";
 import { agregarNotificacion } from "../../../services/notificacionesService";
+import { mostrarToast } from "../../../services/toastService";
 import styles from "./PuntosModal.module.css";
 
 const PISO_CANJE_SUMAS = 10000;
+const PORCENTAJE_DESCUENTO_CANJE = 20;
 
 const formatoNumero = new Intl.NumberFormat("es-CO");
+
+const formatoMoneda = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
 
 function nombreTipoCupon(tipo) {
   if (tipo === "CUMPLEANOS") return "Bono de cumpleaños";
@@ -37,6 +47,7 @@ function PuntosModal({ estaAbierto, onCerrar }) {
   });
   const [consultando, setConsultando] = useState(false);
   const [datos, setDatos] = useState(null);
+  const [saldoDescuento, setSaldoDescuento] = useState(0);
   const [cupones, setCupones] = useState([]);
   const [aplicandoCupon, setAplicandoCupon] = useState(false);
   const [socioRegistrado, setSocioRegistrado] = useState(() => {
@@ -84,6 +95,7 @@ function PuntosModal({ estaAbierto, onCerrar }) {
     setError("");
     setDatos(null);
     setCupones([]);
+    setSaldoDescuento(0);
     setAccion(null);
     setBusqueda({ tipoIdentificacionId: "", numeroIdentificacion: "" });
     setFormularioAccion({
@@ -122,6 +134,9 @@ function PuntosModal({ estaAbierto, onCerrar }) {
         });
         setError("");
         setDatos(resultado);
+        setSaldoDescuento(
+          obtenerSaldoDescuento({ tipoIdentificacionId, numeroIdentificacion })
+        );
         setAccion(null);
         return obtenerCupones(tipoIdentificacionId, numeroIdentificacion)
           .then(setCupones)
@@ -155,6 +170,12 @@ function PuntosModal({ estaAbierto, onCerrar }) {
         busqueda.numeroIdentificacion.trim()
       );
       setDatos(resultado);
+      setSaldoDescuento(
+        obtenerSaldoDescuento({
+          tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
+          numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
+        })
+      );
       cargarCupones(busqueda.tipoIdentificacionId, busqueda.numeroIdentificacion);
       setAccion(null);
     } catch (e) {
@@ -164,59 +185,38 @@ function PuntosModal({ estaAbierto, onCerrar }) {
     }
   };
 
-  const validarAccion = () => {
-    if (accion === "acumular" && !formularioAccion.valorCompra) {
-      return "Ingresa el valor de la compra.";
-    }
-    const valorCompra = Number(formularioAccion.valorCompra);
-    if (accion === "acumular" && (!formularioAccion.valorCompra || valorCompra <= 0)) {
-      return "El valor de la compra debe ser mayor a cero.";
-    }
-    if (accion === "canjear" && (!formularioAccion.puntosCanje || Number(formularioAccion.puntosCanje) <= 0)) {
-      return "Ingresa la cantidad de puntos a canjear.";
-    }
-    if (accion === "canjear" && Number(formularioAccion.puntosCanje) > datos.saldoPuntos) {
-      return "La cantidad a canjear supera tu saldo disponible.";
-    }
-    return "";
-  };
-
   const manejarAccion = async (evento) => {
     evento.preventDefault();
     setError("");
 
-    const mensajeError = validarAccion();
-    if (mensajeError) {
-      setError(mensajeError);
+    if (!formularioAccion.valorCompra) {
+      setError("Ingresa el valor de la compra.");
+      return;
+    }
+    const valorCompra = Number(formularioAccion.valorCompra);
+    if (valorCompra <= 0) {
+      setError("El valor de la compra debe ser mayor a cero.");
+      return;
+    }
+
+    if (!formularioAccion.marcaId) {
+      setError("Selecciona la marca.");
       return;
     }
 
     const base = {
       tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
       numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
+      marcaId: Number(formularioAccion.marcaId),
     };
-    if (accion === "acumular" && !formularioAccion.marcaId) {
-      setError("Selecciona la marca.");
-      return;
-    }
-    if (formularioAccion.marcaId) {
-      base.marcaId = Number(formularioAccion.marcaId);
-    }
 
     setEjecutando(true);
     try {
-      const resultado =
-        accion === "acumular"
-          ? await acumularPuntos({
-              ...base,
-              valorCompra: Number(formularioAccion.valorCompra),
-              referencia: formularioAccion.referencia.trim() || undefined,
-            })
-          : await canjearPuntos({
-              ...base,
-              puntos: Number(formularioAccion.puntosCanje),
-              referencia: formularioAccion.referencia.trim() || undefined,
-            });
+      const resultado = await acumularPuntos({
+        ...base,
+        valorCompra,
+        referencia: formularioAccion.referencia.trim() || undefined,
+      });
 
       setDatos(resultado);
       cargarCupones(base.tipoIdentificacionId, base.numeroIdentificacion);
@@ -232,10 +232,62 @@ function PuntosModal({ estaAbierto, onCerrar }) {
       agregarNotificacion({
         id: `puntos-${Date.now()}`,
         referenciaVisual: "fidelidad",
-        descripcion:
-          accion === "acumular"
-            ? `Acumulaste ${formatoNumero.format(Number(formularioAccion.valorCompra))} SUMAS${marcaNombre ? ` comprando en ${marcaNombre}` : ""}.`
-            : `Canjeaste ${formatoNumero.format(Number(formularioAccion.puntosCanje))} SUMAS${marcaNombre ? ` en ${marcaNombre}` : ""}.`,
+        descripcion: `Acumulaste ${formatoNumero.format(valorCompra)} SUMAS${marcaNombre ? ` comprando en ${marcaNombre}` : ""}.`,
+      });
+    } catch (e) {
+      setError(e?.message || "Ocurrio un error al procesar la transaccion.");
+    } finally {
+      setEjecutando(false);
+    }
+  };
+
+  const manejarCanjeDirecto = async () => {
+    setError("");
+    const puntos = Number(datos.saldoPuntos) || 0;
+    if (puntos < PISO_CANJE_SUMAS) {
+      setError("Debes acumular al menos 10.000 SUMAS para poder canjear.");
+      return;
+    }
+
+    const base = {
+      tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
+      numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
+    };
+
+    setEjecutando(true);
+    try {
+      const resultado = await canjearPuntos({
+        ...base,
+        puntos,
+        referencia: "Canje directo",
+      });
+
+      setDatos(resultado);
+      cargarCupones(base.tipoIdentificacionId, base.numeroIdentificacion);
+      setFormularioAccion({
+        marcaId: "",
+        valorCompra: "",
+        puntosCanje: "",
+        referencia: "",
+      });
+      setAccion(null);
+
+      const socioReferencia = {
+        tipoIdentificacionId: base.tipoIdentificacionId,
+        numeroIdentificacion: base.numeroIdentificacion,
+      };
+      const descuentoGenerado = Math.round(
+        (puntos * PORCENTAJE_DESCUENTO_CANJE) / 100
+      );
+      const saldoPrev = obtenerSaldoDescuento(socioReferencia);
+      guardarSaldoDescuento(socioReferencia, saldoPrev + descuentoGenerado);
+      setSaldoDescuento(saldoPrev + descuentoGenerado);
+      const mensaje = `Canjeaste ${formatoNumero.format(puntos)} SUMAS que se convirtieron en ${formatoMoneda.format(descuentoGenerado)} de descuento (${PORCENTAJE_DESCUENTO_CANJE}%) para tu próxima compra.`;
+      mostrarToast(`¡Canje exitoso! ${mensaje}`);
+      agregarNotificacion({
+        id: `puntos-${Date.now()}`,
+        referenciaVisual: "fidelidad",
+        descripcion: mensaje,
       });
     } catch (e) {
       setError(e?.message || "Ocurrio un error al procesar la transaccion.");
@@ -391,6 +443,12 @@ function PuntosModal({ estaAbierto, onCerrar }) {
               <p className={styles.saldoDetalle}>
                 Equivalente a {formatoNumero.format(datos.saldoPuntos)} pesos COP para canjear
               </p>
+              {saldoDescuento > 0 && (
+                <p className={styles.saldoDescuento}>
+                  Tienes {formatoMoneda.format(saldoDescuento)} de descuento para tu próxima
+                  compra
+                </p>
+              )}
             </div>
 
             {error && <p className={styles.error}>{error}</p>}
@@ -409,80 +467,52 @@ function PuntosModal({ estaAbierto, onCerrar }) {
               <button
                 type="button"
                 className={styles.botonCanjear}
-                onClick={() => {
-                  setError("");
-                  if (datos.saldoPuntos < PISO_CANJE_SUMAS) {
-                    setError("Debes acumular al menos 10.000 SUMAS para poder canjear.");
-                    return;
-                  }
-                  setAccion(accion === "canjear" ? null : "canjear");
-                }}
+                onClick={manejarCanjeDirecto}
+                disabled={ejecutando}
               >
-                {accion === "canjear" ? "Cancelar canje" : "Canjear puntos"}
+                {ejecutando ? "Canjeando..." : "Canjear puntos"}
               </button>
             </div>
 
-            {accion && (
+            {accion === "acumular" && (
               <form className={styles.formularioAccion} onSubmit={manejarAccion}>
-                {accion === "acumular" && (
-                  <div className={styles.grupo}>
-                    <label className={styles.etiqueta} htmlFor="accionMarca">
-                      Marca
-                    </label>
-                    <select
-                      id="accionMarca"
-                      className={styles.select}
-                      value={formularioAccion.marcaId}
-                      onChange={(e) =>
-                        setFormularioAccion((prev) => ({ ...prev, marcaId: e.target.value }))
-                      }
-                    >
-                      <option value="">Selecciona...</option>
-                      {marcas.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.nombre}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="accionMarca">
+                    Marca
+                  </label>
+                  <select
+                    id="accionMarca"
+                    className={styles.select}
+                    value={formularioAccion.marcaId}
+                    onChange={(e) =>
+                      setFormularioAccion((prev) => ({ ...prev, marcaId: e.target.value }))
+                    }
+                  >
+                    <option value="">Selecciona...</option>
+                    {marcas.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                {accion === "acumular" ? (
-                  <div className={styles.grupo}>
-                    <label className={styles.etiqueta} htmlFor="valorCompra">
-                      Valor de la compra en pesos (1 SUMAS por cada $1)
-                    </label>
-                    <input
-                      id="valorCompra"
-                      className={styles.input}
-                      type="number"
-                      min="1"
-                      value={formularioAccion.valorCompra}
-                      onChange={(e) =>
-                        setFormularioAccion((prev) => ({ ...prev, valorCompra: e.target.value }))
-                      }
-                      placeholder="ej. 50000"
-                    />
-                  </div>
-                ) : (
-                  <div className={styles.grupo}>
-                    <label className={styles.etiqueta} htmlFor="puntosCanje">
-                      Puntos a canjear (max. {formatoNumero.format(datos.saldoPuntos)})
-                    </label>
-                    <input
-                      id="puntosCanje"
-                      className={styles.input}
-                      type="number"
-                      min="1"
-                      max={datos.saldoPuntos}
-                      value={formularioAccion.puntosCanje}
-                      onChange={(e) =>
-                        setFormularioAccion((prev) => ({ ...prev, puntosCanje: e.target.value }))
-                      }
-                      placeholder="ej. 2000"
-                    />
-                  </div>
-                )}
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="valorCompra">
+                    Valor de la compra en pesos (1 SUMAS por cada $1)
+                  </label>
+                  <input
+                    id="valorCompra"
+                    className={styles.input}
+                    type="number"
+                    min="1"
+                    value={formularioAccion.valorCompra}
+                    onChange={(e) =>
+                      setFormularioAccion((prev) => ({ ...prev, valorCompra: e.target.value }))
+                    }
+                    placeholder="ej. 50000"
+                  />
+                </div>
 
                 <div className={styles.grupo}>
                   <label className={styles.etiqueta} htmlFor="referencia">
@@ -501,11 +531,7 @@ function PuntosModal({ estaAbierto, onCerrar }) {
                 </div>
 
                 <button type="submit" className={styles.botonEnviar} disabled={ejecutando}>
-                  {ejecutando
-                    ? "Procesando..."
-                    : accion === "acumular"
-                    ? "Acumular SUMAS"
-                    : "Canjear SUMAS"}
+                  {ejecutando ? "Procesando..." : "Acumular SUMAS"}
                 </button>
               </form>
             )}

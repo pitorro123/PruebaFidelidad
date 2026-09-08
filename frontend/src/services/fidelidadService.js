@@ -2,6 +2,7 @@ import { peticionJson } from './http.js'
 
 const CLAVE_SOCIO_STORAGE = 'fidelidadSocio'
 const CLAVE_CUPON_APLICADO = 'fidelidadCuponAplicado'
+const CLAVE_SALDO_DESCUENTO = 'fidelidadSaldoDescuento'
 
 export function guardarSocioFidelidad(socio) {
   localStorage.setItem(CLAVE_SOCIO_STORAGE, JSON.stringify(socio))
@@ -125,4 +126,30 @@ export function obtenerCuponAplicado(socio) {
 export function limpiarCuponAplicado(socio) {
   if (!socio?.numeroIdentificacion) return
   localStorage.removeItem(claveCuponAplicado(socio))
+}
+
+function claveSaldoDescuento(socio) {
+  const tipo = socio?.tipoIdentificacionId || ''
+  const numero = socio?.numeroIdentificacion || ''
+  return `${CLAVE_SALDO_DESCUENTO}-${tipo}-${numero}`
+}
+
+export function obtenerSaldoDescuento(socio) {
+  if (!socio?.numeroIdentificacion) return 0
+  try {
+    const valor = Number(localStorage.getItem(claveSaldoDescuento(socio)) || 0)
+    return Number.isFinite(valor) && valor > 0 ? Math.floor(valor) : 0
+  } catch {
+    return 0
+  }
+}
+
+export function guardarSaldoDescuento(socio, monto) {
+  if (!socio?.numeroIdentificacion) return
+  const total = Math.max(0, Math.floor(Number(monto) || 0))
+  if (total > 0) {
+    localStorage.setItem(claveSaldoDescuento(socio), String(total))
+  } else {
+    localStorage.removeItem(claveSaldoDescuento(socio))
+  }
 }

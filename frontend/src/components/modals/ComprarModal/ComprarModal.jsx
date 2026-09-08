@@ -7,6 +7,8 @@ import {
   obtenerSocioFidelidad,
   obtenerCuponAplicado,
   limpiarCuponAplicado,
+  obtenerSaldoDescuento,
+  guardarSaldoDescuento,
 } from "../../../services/fidelidadService";
 import { agregarNotificacion } from "../../../services/notificacionesService";
 import { mostrarToast } from "../../../services/toastService";
@@ -35,6 +37,7 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
   const navigate = useNavigate();
   const [socio, setSocio] = useState(null);
   const [cuponAplicado, setCuponAplicado] = useState(null);
+  const [saldoDescuento, setSaldoDescuento] = useState(0);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
@@ -45,6 +48,7 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
       if (activo) {
         setSocio(socioGuardado);
         setCuponAplicado(obtenerCuponAplicado(socioGuardado));
+        setSaldoDescuento(obtenerSaldoDescuento(socioGuardado));
         setError("");
       }
     };
@@ -65,7 +69,10 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
     ? Math.round((totalCompra * Number(cuponAplicado.descuentoPorcentaje)) / 100)
     : 0;
   const totalPagar = totalCompra - descuento;
+  const descuentoCanje = Math.min(totalPagar, saldoDescuento);
+  const totalFinal = totalPagar - descuentoCanje;
   const hayDescuento = cuponAplicado && totalPagar > 0;
+  const hayCanje = descuentoCanje > 0;
 
   const irAInscripcion = () => {
     onCerrar();
@@ -95,28 +102,36 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
     }
 
     setCargando(true);
+    const ahorroTotal = descuento + descuentoCanje;
     try {
-      await acumularPuntos({
-        tipoIdentificacionId: Number(socio.tipoIdentificacionId),
-        numeroIdentificacion: socio.numeroIdentificacion.trim(),
-        marcaId,
-        valorCompra: totalPagar,
-        referencia: `COMPRA-${Date.now()}`,
-      });
+      if (totalFinal > 0) {
+        await acumularPuntos({
+          tipoIdentificacionId: Number(socio.tipoIdentificacionId),
+          numeroIdentificacion: socio.numeroIdentificacion.trim(),
+          marcaId,
+          valorCompra: totalFinal,
+          referencia: `COMPRA-${Date.now()}`,
+        });
+        guardarSaldoDescuento(socio, saldoDescuento - descuentoCanje);
+      } else {
+        guardarSaldoDescuento(socio, 0);
+      }
 
       const tallaTexto = talla?.nombre ? `Talla ${talla.nombre}, ` : "";
       agregarNotificacion({
         id: `carrito-${Date.now()}`,
         referenciaVisual: "pedido",
-        descripcion: `Añadido al carrito: ${producto.nombre} (${tallaTexto}x${cantidad}) por ${formatoMoneda.format(totalPagar)}.${hayDescuento ? ` Incluye ${nombreTipoCupon(cuponAplicado.tipo)} de ${cuponAplicado.descuentoPorcentaje}%.` : ""}`,
+        descripcion: `Añadido al carrito: ${producto.nombre} (${tallaTexto}x${cantidad}) por ${formatoMoneda.format(totalFinal)}.${ahorroTotal ? ` Te ahorraste ${formatoMoneda.format(ahorroTotal)} con tus beneficios SUMAS.` : ""}`,
       });
       agregarNotificacion({
         id: `compra-${Date.now()}`,
         referenciaVisual: "fidelidad",
-        descripcion: `Compra registrada: acumulaste ${formatoMoneda.format(totalPagar)} SUMAS comprando en ${marcaNombre}.${hayDescuento ? ` Te ahorraste ${formatoMoneda.format(descuento)} con tu ${nombreTipoCupon(cuponAplicado.tipo)}.` : ""}`,
+        descripcion: `Compra registrada${totalFinal > 0 ? `: acumulaste ${formatoMoneda.format(totalFinal)} SUMAS comprando en ${marcaNombre}` : " con tu saldo de descuento SUMAS"}.${ahorroTotal ? ` Te ahorraste ${formatoMoneda.format(ahorroTotal)}.` : ""}`,
       });
       mostrarToast(
-        `¡Compra exitosa! Acumulaste ${formatoMoneda.format(totalPagar)} SUMAS.${hayDescuento ? ` Te ahorraste ${formatoMoneda.format(descuento)}.` : ""}`
+        totalFinal > 0
+          ? `¡Compra exitosa! Acumulaste ${formatoMoneda.format(totalFinal)} SUMAS.${ahorroTotal ? ` Te ahorraste ${formatoMoneda.format(ahorroTotal)}.` : ""}`
+          : `¡Compra exitosa! Tu prenda fue cubierta por tus descuentos SUMAS.`
       );
 
       limpiarCuponAplicado(socio);
@@ -172,9 +187,14 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
                 Confirmar compra
               </h2>
               <p className={styles.subtitulo}>
-                Tu compra suma {formatoMoneda.format(totalPagar)} a tus puntos SUMAS.
-                {hayDescuento &&
-                  ` Antes ${formatoMoneda.format(totalCompra)}, te ahorras ${formatoMoneda.format(descuento)} con tu ${nombreTipoCupon(cuponAplicado.tipo)} (${cuponAplicado.descuentoPorcentaje}%).`}
+                Tu compra suma {formatoMoneda.format(totalFinal)} a tus puntos SUMAS.
+                {(hayDescuento || hayCanje) &&
+                  ` Aplicas ${[
+                    hayDescuento ? `${nombreTipoCupon(cuponAplicado.tipo)} -${formatoMoneda.format(descuento)}` : "",
+                    hayCanje ? `tus puntos canjeados -${formatoMoneda.format(descuentoCanje)}` : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" y ")}.`}
               </p>
             </div>
 
@@ -193,20 +213,28 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
                 {talla?.nombre ? `Talla ${talla.nombre} · ` : ""}
                 Cantidad {cantidad} · {producto.marca}
               </p>
-              {hayDescuento ? (
+              {hayDescuento || hayCanje ? (
                 <>
                   <p className={styles.resumenPrecioOriginal}>
                     {formatoMoneda.format(totalCompra)}
                   </p>
-                  <div className={styles.resumenDescuento}>
-                    <span>
-                      {nombreTipoCupon(cuponAplicado.tipo)} ({cuponAplicado.descuentoPorcentaje}%)
-                    </span>
-                    <span>-{formatoMoneda.format(descuento)}</span>
-                  </div>
+                  {hayDescuento && (
+                    <div className={styles.resumenDescuento}>
+                      <span>
+                        {nombreTipoCupon(cuponAplicado.tipo)} ({cuponAplicado.descuentoPorcentaje}%)
+                      </span>
+                      <span>-{formatoMoneda.format(descuento)}</span>
+                    </div>
+                  )}
+                  {hayCanje && (
+                    <div className={styles.resumenCanje}>
+                      <span>Descuento por puntos canjeados</span>
+                      <span>-{formatoMoneda.format(descuentoCanje)}</span>
+                    </div>
+                  )}
                   <div className={styles.resumenTotalPagar}>
                     <span>Total a pagar</span>
-                    <span>{formatoMoneda.format(totalPagar)}</span>
+                    <span>{formatoMoneda.format(totalFinal)}</span>
                   </div>
                 </>
               ) : (
