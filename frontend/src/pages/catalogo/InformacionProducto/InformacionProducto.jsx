@@ -26,7 +26,7 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
 
   const handleAgregarClick = () => {
     if (!autenticado) {
-      navigate(RUTAS.INICIAR_SESION);
+      navigate(RUTAS.REGISTRO);
       return;
     }
     onAgregarCarrito(producto, tallaSeleccionada, cantidad);

@@ -38,7 +38,7 @@ function Home() {
     useEffect(() => {
         const solicitarInscripcion = () => {
             if (!autenticado) {
-                navigate(RUTAS.INICIAR_SESION);
+                navigate(RUTAS.REGISTRO);
                 return;
             }
             setModalFidelidadAbierto(true);
@@ -50,7 +50,7 @@ function Home() {
 
     const abrirModalFidelidad = () => {
         if (!autenticado) {
-            navigate(RUTAS.INICIAR_SESION);
+            navigate(RUTAS.REGISTRO);
             return;
         }
         setModalFidelidadAbierto(true);
