@@ -6,8 +6,12 @@ import com.example.fidelidad.dtos.fidelidad.VerificacionRequestDTO;
 import com.example.fidelidad.dtos.fidelidad.VerificacionResponseDTO;
 import com.example.fidelidad.modelos.Ciudad;
 import com.example.fidelidad.modelos.ClienteFidelidad;
+import com.example.fidelidad.modelos.Cupon;
+import com.example.fidelidad.modelos.EstadoCupon;
+import com.example.fidelidad.modelos.TipoCupon;
 import com.example.fidelidad.repositorios.ICiudadRepositorio;
 import com.example.fidelidad.repositorios.IClienteFidelidadRepositorio;
+import com.example.fidelidad.repositorios.ICuponRepositorio;
 import com.example.fidelidad.repositorios.IMarcaRepositorio;
 import com.example.fidelidad.repositorios.ITipoIdentificacionRepositorio;
 import com.example.fidelidad.servicios.correo.IServicioCorreo;
@@ -27,20 +31,25 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
     private final ITipoIdentificacionRepositorio repositorioTipo;
     private final ICiudadRepositorio repositorioCiudad;
     private final IMarcaRepositorio repositorioMarca;
+    private final ICuponRepositorio repositorioCupon;
     private final IValidacionClienteFidelidad validador;
     private final IServicioCorreo servicioCorreo;
+
+    private static final int DESCUENTO_BONO_CUMPLEANOS = 20;
 
     public ServicioClienteFidelidadImpl(
             IClienteFidelidadRepositorio repositorioCliente,
             ITipoIdentificacionRepositorio repositorioTipo,
             ICiudadRepositorio repositorioCiudad,
             IMarcaRepositorio repositorioMarca,
+            ICuponRepositorio repositorioCupon,
             IValidacionClienteFidelidad validador,
             IServicioCorreo servicioCorreo) {
         this.repositorioCliente = repositorioCliente;
         this.repositorioTipo = repositorioTipo;
         this.repositorioCiudad = repositorioCiudad;
         this.repositorioMarca = repositorioMarca;
+        this.repositorioCupon = repositorioCupon;
         this.validador = validador;
         this.servicioCorreo = servicioCorreo;
     }
@@ -79,8 +88,25 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
         cliente.setFechaRegistro(LocalDate.now());
 
         ClienteFidelidad guardado = repositorioCliente.save(cliente);
-        servicioCorreo.enviarBienvenida(guardado.getEmail(), guardado.getNombres(), guardado.getMarca().getNombre(), true);
+        Cupon bonoCumpleanos = crearBonoCumpleanos(guardado);
+        servicioCorreo.enviarBienvenidaConBono(guardado.getEmail(), guardado.getNombres(),
+                guardado.getMarca().getNombre(), bonoCumpleanos);
         return toResponse(guardado);
+    }
+
+    private Cupon crearBonoCumpleanos(ClienteFidelidad cliente) {
+        Cupon cupon = new Cupon();
+        cupon.setCliente(cliente);
+        cupon.setTipo(TipoCupon.CUMPLEANOS);
+        cupon.setCodigo("FELIZ-MES-" + cliente.getId());
+        cupon.setDescuentoPorcentaje(DESCUENTO_BONO_CUMPLEANOS);
+        cupon.setFechaExpiracion(ultimoDiaDelMes(LocalDate.now()));
+        cupon.setEstado(EstadoCupon.ACTIVO);
+        return repositorioCupon.save(cupon);
+    }
+
+    private LocalDate ultimoDiaDelMes(LocalDate fecha) {
+        return fecha.withDayOfMonth(fecha.lengthOfMonth());
     }
 
     @Override

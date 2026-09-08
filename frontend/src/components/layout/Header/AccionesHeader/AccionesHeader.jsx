@@ -5,6 +5,7 @@ import PanelNotificaciones from "./PanelNotificaciones/PanelNotificaciones"
 import PanelPerfil from "./PanelPerfil/PanelPerfil"
 import PuntosModal from "../../../modals/PuntosModal/PuntosModal"
 import { obtenerNotificaciones, suscribirseNotificaciones } from "../../../../services/notificacionesService"
+import { mostrarToast } from "../../../../services/toastService"
 import { useEffect, useRef, useState, useSyncExternalStore, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 import { RUTAS } from "../../../../constants/rutas"
@@ -51,6 +52,10 @@ const AccionesHeader = () => {
     }
 
     function abrirPuntos() {
+        if (!estaAutenticado) {
+            mostrarToast("Inicia sesión y regístrate para acceder a tus puntos SUMAS.", "info");
+            return;
+        }
         setPanelActivo(null)
         setPuntosAbierto(true)
     }

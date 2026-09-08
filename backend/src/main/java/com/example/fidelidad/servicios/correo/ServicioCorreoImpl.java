@@ -1,5 +1,6 @@
 package com.example.fidelidad.servicios.correo;
 
+import com.example.fidelidad.modelos.Cupon;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,36 @@ public class ServicioCorreoImpl implements IServicioCorreo {
         }
     }
 
+    @Override
+    @Async
+    public void enviarBienvenidaConBono(String email, String nombre, String marca, Cupon bonoCumpleanos) {
+        if (email == null || email.isBlank()) {
+            log.warn("No se envio correo de bienvenida: el email esta vacio");
+            return;
+        }
+
+        String nombreUsuario = (nombre == null || nombre.isBlank()) ? "amigo" : nombre.trim();
+        String asunto = "Bienvenido a ReVuelta - tu 20% y tu bono de cumpleanos te esperan";
+
+        try {
+            MimeMessage mensaje = mailSender.createMimeMessage();
+            MimeMessageHelper ayuda = new MimeMessageHelper(mensaje, true, "UTF-8");
+            ayuda.setFrom(remitente);
+            ayuda.setTo(email.trim());
+            ayuda.setSubject(asunto);
+            ayuda.setText(construirHtml(nombreUsuario, marca, true, bonoCumpleanos), true);
+            mailSender.send(mensaje);
+            log.info("Correo de bienvenida con bono enviado a {}", email);
+        } catch (Exception ex) {
+            log.warn("No se pudo enviar correo de bienvenida a {}: {}", email, ex.getMessage());
+        }
+    }
+
     private String construirHtml(String nombre, String marca, boolean incluirDescuento) {
+        return construirHtml(nombre, marca, incluirDescuento, null);
+    }
+
+    private String construirHtml(String nombre, String marca, boolean incluirDescuento, Cupon bonoCumpleanos) {
         StringBuilder cuerpo = new StringBuilder();
 
         String etiquetaBloque;
@@ -92,10 +122,19 @@ public class ServicioCorreoImpl implements IServicioCorreo {
                 .append("<tr><td style=\"padding:30px 32px;font-family:Arial,Helvetica,sans-serif;\">")
                 .append("<span style=\"display:inline-block;margin:0 0 12px;padding:5px 12px;background-color:").append(COLOR_MARIGOLD).append(";color:").append(COLOR_PINE).append(";border-radius:999px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;\">").append(etiquetaBloque).append("</span>")
                 .append("<h2 style=\"margin:0 0 10px;font-family:Georgia,'Times New Roman',serif;font-size:24px;color:").append(COLOR_PINE).append(";\">Hola, ").append(escaparHtml(nombre)).append("</h2>")
-                .append("<p style=\"margin:0 0 12px;font-size:15px;line-height:1.6;color:#3c3a34;\">").append(mensajePrincipal).append("</p>")
+                .append("<p style=\"margin:0 0 12px;font-size:15px;line-height:1.6;color:#3c3a34;\">").append(mensajePrincipal).append("</p>");
+
+                if (bonoCumpleanos != null) {
+                    cuerpo.append("<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin:4px 0 16px;background-color:").append(COLOR_MARIGOLD).append(";border-radius:12px;\">")
+                            .append("<tr><td style=\"padding:16px 18px;\">")
+                            .append("<p style=\"margin:0 0 4px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:").append(COLOR_PINE).append(";\">🎂 Tu bono de cumpleanos</p>")
+                            .append("<p style=\"margin:0;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;color:").append(COLOR_PINE).append(";\">").append(bonoCumpleanos.getDescuentoPorcentaje()).append("% de descuento con el codigo <span style=\"color:#ffffff;background-color:").append(COLOR_PINE).append(";padding:2px 8px;border-radius:6px;\">").append(escaparHtml(bonoCumpleanos.getCodigo())).append("</span></p>")
+                            .append("<p style=\"margin:6px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:").append(COLOR_PINE).append(";\">Vence el ").append(bonoCumpleanos.getFechaExpiracion()).append(". Disfrutalo durante tu mes de nacimiento.</p>")
+                            .append("</td></tr></table>");
+                }
 
                 // Beneficios
-                .append("<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin:8px 0 16px;\">")
+                cuerpo.append("<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"margin:8px 0 16px;\">")
                 .append("<tr>")
                 .append(beneficio("20% en tu primera compra"))
                 .append(beneficio("Ofertas exclusivas de tus marcas"))

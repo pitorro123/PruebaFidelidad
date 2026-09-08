@@ -1,8 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ComprarModal from '../../../components/modals/ComprarModal/ComprarModal';
+import { useAuth } from '../../../hooks/useAuth';
+import { RUTAS } from '../../../constants/rutas';
 import styles from '../../PaginaDetalleProducto/DetalleProducto.module.css';
 
 const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
+  const navigate = useNavigate();
+  const { autenticado } = useAuth();
   const tallasDisponibles = producto.tallas || [];
   const [tallaSeleccionada, setTallaSeleccionada] = useState(tallasDisponibles[0] || null);
   const [cantidad, setCantidad] = useState(1);
@@ -20,6 +25,10 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
   };
 
   const handleAgregarClick = () => {
+    if (!autenticado) {
+      navigate(RUTAS.INICIAR_SESION);
+      return;
+    }
     onAgregarCarrito(producto, tallaSeleccionada, cantidad);
     setModalCompraAbierto(true);
   };
