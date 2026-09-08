@@ -1,6 +1,7 @@
 import { peticionJson } from './http.js'
 
 const CLAVE_SOCIO_STORAGE = 'fidelidadSocio'
+const CLAVE_CUPON_APLICADO = 'fidelidadCuponAplicado'
 
 export function guardarSocioFidelidad(socio) {
   localStorage.setItem(CLAVE_SOCIO_STORAGE, JSON.stringify(socio))
@@ -86,4 +87,46 @@ export async function usarCupon(codigo) {
     method: 'POST',
     body: JSON.stringify({ codigo }),
   })
+}
+
+function claveCuponAplicado(socio) {
+  const tipo = socio?.tipoIdentificacionId || ''
+  const numero = socio?.numeroIdentificacion || ''
+  return `${CLAVE_CUPON_APLICADO}-${tipo}-${numero}`
+}
+
+export function guardarCuponAplicado(cupon, socio) {
+  if (!socio?.numeroIdentificacion) return
+  localStorage.setItem(
+    claveCuponAplicado(socio),
+    JSON.stringify({
+      cupon: {
+        id: cupon.id,
+        codigo: cupon.codigo,
+        tipo: cupon.tipo,
+        descuentoPorcentaje: cupon.descuentoPorcentaje,
+        fechaExpiracion: cupon.fechaExpiracion,
+      },
+      aplicadoEn: new Date().toISOString(),
+    })
+  )
+}
+
+export function obtenerCuponAplicado(socio) {
+  if (!socio?.numeroIdentificacion) return null
+  try {
+    const guardado = localStorage.getItem(claveCuponAplicado(socio))
+    if (!guardado) return null
+    const { cupon } = JSON.parse(guardado)
+    if (!cupon?.descuentoPorcentaje || !cupon?.fechaExpiracion) return null
+    if (new Date(`${cupon.fechaExpiracion}T23:59:59`) < new Date()) return null
+    return cupon
+  } catch {
+    return null
+  }
+}
+
+export function limpiarCuponAplicado(socio) {
+  if (!socio?.numeroIdentificacion) return
+  localStorage.removeItem(claveCuponAplicado(socio))
 }

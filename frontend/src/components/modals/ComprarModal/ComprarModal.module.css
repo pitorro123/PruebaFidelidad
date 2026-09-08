@@ -155,6 +155,40 @@
     color: var(--color-ink);
 }
 
+.resumenPrecioOriginal {
+    margin: 4px 0 0;
+    font-size: 13px;
+    text-decoration: line-through;
+    color: var(--text);
+}
+
+.resumenDescuento {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 2px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(62, 156, 122, 0.12);
+    color: var(--color-moss);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.resumenTotalPagar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--color-ink);
+}
+
 .formulario {
     display: flex;
     flex-direction: column;

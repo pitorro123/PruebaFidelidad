@@ -64,7 +64,7 @@ function Home() {
 
     const abrirModalPuntos = () => {
         if (!autenticado) {
-            mostrarToast("Inicia sesión y regístrate para acceder a tus puntos SUMAS.", "info");
+            mostrarToast("Inicia sesión y regístrate.", "info");
             return;
         }
         setModalPuntosAbierto(true);

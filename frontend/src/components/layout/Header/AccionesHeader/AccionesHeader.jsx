@@ -53,7 +53,7 @@ const AccionesHeader = () => {
 
     function abrirPuntos() {
         if (!estaAutenticado) {
-            mostrarToast("Inicia sesión y regístrate para acceder a tus puntos SUMAS.", "info");
+            mostrarToast("Inicia sesión y regístrate.", "info");
             return;
         }
         setPanelActivo(null)

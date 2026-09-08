@@ -423,10 +423,11 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
               Tu registro en el programa de fidelidad{registroExitoso?.marca ? ` de ${registroExitoso.marca}` : ""} fue exitoso.
               Ya puedes disfrutar de tu <strong>20% de descuento</strong> en tu primera compra.
             </p>
-            <ul className={styles.listaBeneficios}>
-              <li>20% de descuento en tu primera compra</li>
-              <li>Ofertas exclusivas de tu marca</li>
-            </ul>
+<ul className={styles.listaBeneficios}>
+                <li>20% de descuento en tu primera compra</li>
+                <li>Ofertas exclusivas de tu marca</li>
+                <li>20% de descuento en el mes de tu cumpleaños</li>
+              </ul>
             <button type="button" className={styles.botonEnviar} onClick={onCerrar}>
               Continuar
             </button>

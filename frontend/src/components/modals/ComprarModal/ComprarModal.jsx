@@ -5,6 +5,8 @@ import {
   obtenerMarcas,
   acumularPuntos,
   obtenerSocioFidelidad,
+  obtenerCuponAplicado,
+  limpiarCuponAplicado,
 } from "../../../services/fidelidadService";
 import { agregarNotificacion } from "../../../services/notificacionesService";
 import { mostrarToast } from "../../../services/toastService";
@@ -23,9 +25,16 @@ function enmascararDocumento(numero) {
   return `•••• ${texto.slice(-4)}`;
 }
 
+function nombreTipoCupon(tipo) {
+  if (tipo === "CUMPLEANOS") return "Bono de cumpleaños";
+  if (tipo === "SUMAS_DAYS") return "Sumas Days";
+  return tipo;
+}
+
 function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, onCompraExitosa }) {
   const navigate = useNavigate();
   const [socio, setSocio] = useState(null);
+  const [cuponAplicado, setCuponAplicado] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,6 +44,7 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
       const socioGuardado = obtenerSocioFidelidad();
       if (activo) {
         setSocio(socioGuardado);
+        setCuponAplicado(obtenerCuponAplicado(socioGuardado));
         setError("");
       }
     };
@@ -51,6 +61,11 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
   if (!estaAbierto) return null;
 
   const totalCompra = Number(producto.precio || 0) * Number(cantidad || 1);
+  const descuento = cuponAplicado
+    ? Math.round((totalCompra * Number(cuponAplicado.descuentoPorcentaje)) / 100)
+    : 0;
+  const totalPagar = totalCompra - descuento;
+  const hayDescuento = cuponAplicado && totalPagar > 0;
 
   const irAInscripcion = () => {
     onCerrar();
@@ -85,7 +100,7 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
         tipoIdentificacionId: Number(socio.tipoIdentificacionId),
         numeroIdentificacion: socio.numeroIdentificacion.trim(),
         marcaId,
-        valorCompra: totalCompra,
+        valorCompra: totalPagar,
         referencia: `COMPRA-${Date.now()}`,
       });
 
@@ -93,17 +108,18 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
       agregarNotificacion({
         id: `carrito-${Date.now()}`,
         referenciaVisual: "pedido",
-        descripcion: `Añadido al carrito: ${producto.nombre} (${tallaTexto}x${cantidad}) por ${formatoMoneda.format(totalCompra)}.`,
+        descripcion: `Añadido al carrito: ${producto.nombre} (${tallaTexto}x${cantidad}) por ${formatoMoneda.format(totalPagar)}.${hayDescuento ? ` Incluye ${nombreTipoCupon(cuponAplicado.tipo)} de ${cuponAplicado.descuentoPorcentaje}%.` : ""}`,
       });
       agregarNotificacion({
         id: `compra-${Date.now()}`,
         referenciaVisual: "fidelidad",
-        descripcion: `Compra registrada: acumulaste ${formatoMoneda.format(totalCompra)} SUMAS comprando en ${marcaNombre}.`,
+        descripcion: `Compra registrada: acumulaste ${formatoMoneda.format(totalPagar)} SUMAS comprando en ${marcaNombre}.${hayDescuento ? ` Te ahorraste ${formatoMoneda.format(descuento)} con tu ${nombreTipoCupon(cuponAplicado.tipo)}.` : ""}`,
       });
       mostrarToast(
-        `¡Compra exitosa! Acumulaste ${formatoMoneda.format(totalCompra)} SUMAS.`
+        `¡Compra exitosa! Acumulaste ${formatoMoneda.format(totalPagar)} SUMAS.${hayDescuento ? ` Te ahorraste ${formatoMoneda.format(descuento)}.` : ""}`
       );
 
+      limpiarCuponAplicado(socio);
       onCompraExitosa?.();
       onCerrar();
     } catch (e) {
@@ -156,7 +172,9 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
                 Confirmar compra
               </h2>
               <p className={styles.subtitulo}>
-                Tu compra suma {formatoMoneda.format(totalCompra)} a tus puntos SUMAS.
+                Tu compra suma {formatoMoneda.format(totalPagar)} a tus puntos SUMAS.
+                {hayDescuento &&
+                  ` Antes ${formatoMoneda.format(totalCompra)}, te ahorras ${formatoMoneda.format(descuento)} con tu ${nombreTipoCupon(cuponAplicado.tipo)} (${cuponAplicado.descuentoPorcentaje}%).`}
               </p>
             </div>
 
@@ -175,7 +193,25 @@ function ComprarModal({ estaAbierto, onCerrar, producto = {}, talla, cantidad, o
                 {talla?.nombre ? `Talla ${talla.nombre} · ` : ""}
                 Cantidad {cantidad} · {producto.marca}
               </p>
-              <p className={styles.resumenTotal}>{formatoMoneda.format(totalCompra)}</p>
+              {hayDescuento ? (
+                <>
+                  <p className={styles.resumenPrecioOriginal}>
+                    {formatoMoneda.format(totalCompra)}
+                  </p>
+                  <div className={styles.resumenDescuento}>
+                    <span>
+                      {nombreTipoCupon(cuponAplicado.tipo)} ({cuponAplicado.descuentoPorcentaje}%)
+                    </span>
+                    <span>-{formatoMoneda.format(descuento)}</span>
+                  </div>
+                  <div className={styles.resumenTotalPagar}>
+                    <span>Total a pagar</span>
+                    <span>{formatoMoneda.format(totalPagar)}</span>
+                  </div>
+                </>
+              ) : (
+                <p className={styles.resumenTotal}>{formatoMoneda.format(totalCompra)}</p>
+              )}
             </div>
 
             {error && <p className={styles.error}>{error}</p>}

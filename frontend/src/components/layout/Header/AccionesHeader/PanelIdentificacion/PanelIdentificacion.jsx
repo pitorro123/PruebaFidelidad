@@ -6,7 +6,7 @@ const PanelIdentificacion = () => {
     return (
         <div className={styles.panelIdentificacion}>
             <p className={styles.mensajeIdentificacion}>
-                Accede a tu cuenta
+                Inicia sesión y regístrate
             </p>
             <div className={styles.accionesIdentificacion}>
                 <NavLink to={RUTAS.INICIAR_SESION} className={styles.botonIniciarSesion}>

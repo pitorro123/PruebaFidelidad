@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   cargarCatalogosIniciales,
@@ -6,7 +6,9 @@ import {
   acumularPuntos,
   canjearPuntos,
   obtenerCupones,
+  obtenerSocioFidelidad,
   usarCupon,
+  guardarCuponAplicado,
 } from "../../../services/fidelidadService";
 import { agregarNotificacion } from "../../../services/notificacionesService";
 import styles from "./PuntosModal.module.css";
@@ -37,6 +39,10 @@ function PuntosModal({ estaAbierto, onCerrar }) {
   const [datos, setDatos] = useState(null);
   const [cupones, setCupones] = useState([]);
   const [aplicandoCupon, setAplicandoCupon] = useState(false);
+  const [socioRegistrado, setSocioRegistrado] = useState(() => {
+    const socio = obtenerSocioFidelidad();
+    return Boolean(socio?.tipoIdentificacionId && socio?.numeroIdentificacion?.trim());
+  });
 
   const [accion, setAccion] = useState(null);
   const [formularioAccion, setFormularioAccion] = useState({
@@ -88,11 +94,50 @@ function PuntosModal({ estaAbierto, onCerrar }) {
     });
   };
 
+  useEffect(() => {
+    const actualizar = () => {
+      const socio = obtenerSocioFidelidad();
+      setSocioRegistrado(Boolean(socio?.tipoIdentificacionId && socio?.numeroIdentificacion?.trim()));
+    };
+    window.addEventListener("fidelidad:inscrito", actualizar);
+    return () => window.removeEventListener("fidelidad:inscrito", actualizar);
+  }, []);
+
   const cargarCupones = (tipoIdentificacionId, numeroIdentificacion) => {
     obtenerCupones(Number(tipoIdentificacionId), numeroIdentificacion.trim())
       .then(setCupones)
       .catch(() => setCupones([]));
   };
+
+  const consultarSocio = useCallback(() => {
+    const socioGuardado = obtenerSocioFidelidad();
+    if (!socioGuardado?.tipoIdentificacionId || !socioGuardado?.numeroIdentificacion?.trim()) return;
+    const tipoIdentificacionId = Number(socioGuardado.tipoIdentificacionId);
+    const numeroIdentificacion = socioGuardado.numeroIdentificacion.trim();
+    consultarPuntos(tipoIdentificacionId, numeroIdentificacion)
+      .then((resultado) => {
+        setBusqueda({
+          tipoIdentificacionId: String(tipoIdentificacionId),
+          numeroIdentificacion,
+        });
+        setError("");
+        setDatos(resultado);
+        setAccion(null);
+        return obtenerCupones(tipoIdentificacionId, numeroIdentificacion)
+          .then(setCupones)
+          .catch(() => setCupones([]));
+      })
+      .catch((e) => setError(e?.message || "Ocurrio un error al consultar los puntos."));
+  }, []);
+
+  const estabaAbierto = useRef(false);
+
+  useEffect(() => {
+    const abriendose = estaAbierto && !estabaAbierto.current;
+    estabaAbierto.current = estaAbierto;
+    if (!abriendose || datos || !socioRegistrado) return;
+    consultarSocio();
+  }, [estaAbierto, datos, socioRegistrado, consultarSocio]);
 
   const manejarConsulta = async (evento) => {
     evento.preventDefault();
@@ -205,6 +250,10 @@ function PuntosModal({ estaAbierto, onCerrar }) {
       setCupones((prev) =>
         prev.map((c) => (c.codigo === codigo ? actualizado : c))
       );
+      guardarCuponAplicado(actualizado, {
+        tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
+        numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
+      });
       agregarNotificacion({
         id: `cupon-${Date.now()}`,
         referenciaVisual: "fidelidad",
@@ -248,6 +297,24 @@ function PuntosModal({ estaAbierto, onCerrar }) {
               Reintentar
             </button>
           </div>
+        ) : !datos && socioRegistrado ? (
+          error ? (
+            <div className={styles.errorCarga}>
+              <p className={styles.mensajeErrorCarga}>{error}</p>
+              <button
+                type="button"
+                className={styles.botonReintentar}
+                onClick={() => {
+                  setError("");
+                  consultarSocio();
+                }}
+              >
+                Reintentar
+              </button>
+            </div>
+          ) : (
+            <p className={styles.cargando}>Cargando tus puntos...</p>
+          )
         ) : !datos ? (
           <>
             <div className={styles.cabecera}>
