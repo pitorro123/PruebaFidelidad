@@ -81,6 +81,10 @@
     overflow-wrap: anywhere;
 }
 
+.contenedorOpciones {
+    margin-top: 0.5rem;
+}
+
 .contenedorCerrarSesion {
     margin-top: 0.75rem;
 

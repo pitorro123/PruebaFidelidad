@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS productos (
 
 CREATE TABLE IF NOT EXISTS clientes_fidelidad (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(120) NOT NULL,
     tipo_identificacion_id BIGINT NOT NULL,
     numero_identificacion VARCHAR(20) NOT NULL,
     nombres VARCHAR(80) NOT NULL,
@@ -57,6 +58,7 @@ CREATE TABLE IF NOT EXISTS clientes_fidelidad (
     pais_id BIGINT NOT NULL,
     marca_id BIGINT NOT NULL,
     fecha_registro DATE NOT NULL,
+    saldo_puntos INT NOT NULL DEFAULT 0,
     CONSTRAINT uk_cliente_marca UNIQUE (tipo_identificacion_id, numero_identificacion, marca_id),
     CONSTRAINT fk_cliente_tipo FOREIGN KEY (tipo_identificacion_id) REFERENCES tipos_identificacion (id),
     CONSTRAINT fk_cliente_ciudad FOREIGN KEY (ciudad_id) REFERENCES ciudades (id),
@@ -69,4 +71,38 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(120) NOT NULL UNIQUE,
     password_hash VARCHAR(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS transacciones_puntos (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    cliente_id BIGINT NOT NULL,
+    marca_id BIGINT NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    puntos INT NOT NULL,
+    referencia VARCHAR(60),
+    fecha DATE NOT NULL,
+    CONSTRAINT fk_transaccion_cliente FOREIGN KEY (cliente_id) REFERENCES clientes_fidelidad (id),
+    CONSTRAINT fk_transaccion_marca FOREIGN KEY (marca_id) REFERENCES marcas (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS campanas (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(200) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    descuento_porcentaje INT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS cupones (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    cliente_id BIGINT NOT NULL,
+    campana_id BIGINT,
+    tipo VARCHAR(20) NOT NULL,
+    codigo VARCHAR(30) NOT NULL UNIQUE,
+    descuento_porcentaje INT NOT NULL,
+    fecha_expiracion DATE NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_cupon_cliente FOREIGN KEY (cliente_id) REFERENCES clientes_fidelidad (id),
+    CONSTRAINT fk_cupon_campana FOREIGN KEY (campana_id) REFERENCES campanas (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

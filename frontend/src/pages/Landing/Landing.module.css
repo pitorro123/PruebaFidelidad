@@ -59,3 +59,30 @@
     filter: brightness(1.05);
     transform: translateY(-1px);
 }
+
+.ctaAcciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.ctaBotonSecundario {
+    padding: 13px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--font-body);
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid var(--color-pine);
+    background: transparent;
+    color: var(--color-pine);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.ctaBotonSecundario:hover {
+    background: var(--color-pine);
+    color: #ffffff;
+    transform: translateY(-1px);
+}

@@ -94,7 +94,11 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
         boolean inscrito = repositorioCliente
                 .existsByTipoIdentificacionIdAndNumeroIdentificacionAndMarcaId(
                         tipoId, numero.trim(), marcaId);
-        return new VerificacionResponseDTO(inscrito, null);
+        ClienteFidelidad existente = repositorioCliente
+                .findFirstByTipoIdentificacionIdAndNumeroIdentificacionOrderByFechaRegistroDesc(
+                        tipoId, numero.trim())
+                .orElse(null);
+        return new VerificacionResponseDTO(inscrito, existente == null ? null : toResponse(existente));
     }
 
     @Override

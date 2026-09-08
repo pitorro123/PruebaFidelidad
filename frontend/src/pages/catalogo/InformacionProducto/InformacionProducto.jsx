@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ComprarModal from '../../../components/modals/ComprarModal/ComprarModal';
 import styles from '../../PaginaDetalleProducto/DetalleProducto.module.css';
 
 const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
@@ -6,6 +7,7 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
   const [tallaSeleccionada, setTallaSeleccionada] = useState(tallasDisponibles[0] || null);
   const [cantidad, setCantidad] = useState(1);
   const [agregadoAlCarrito, setAgregadoAlCarrito] = useState(false);
+  const [modalCompraAbierto, setModalCompraAbierto] = useState(false);
 
   if (!producto || Object.keys(producto).length === 0) return null;
 
@@ -19,8 +21,13 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
 
   const handleAgregarClick = () => {
     onAgregarCarrito(producto, tallaSeleccionada, cantidad);
+    setModalCompraAbierto(true);
+  };
+
+  const cerrarModal = () => setModalCompraAbierto(false);
+
+  const handleCompraExitosa = () => {
     setAgregadoAlCarrito(true);
-    alert("¡Producto añadido al carrito con éxito!");
   };
 
   return (
@@ -59,9 +66,18 @@ const InformacionProducto = ({ producto = {}, onAgregarCarrito }) => {
           className={`${styles.btnCarrito} ${agregadoAlCarrito ? styles.agregado : ''}`}
           disabled={agregadoAlCarrito}
         >
-          {agregadoAlCarrito ? 'Añadido al carrito' : 'Añadir al carrito'}
+          {agregadoAlCarrito ? 'Compra realizada' : 'Comprar'}
         </button>
       </div>
+
+      <ComprarModal
+        estaAbierto={modalCompraAbierto}
+        onCerrar={cerrarModal}
+        producto={producto}
+        talla={tallaSeleccionada}
+        cantidad={cantidad}
+        onCompraExitosa={handleCompraExitosa}
+      />
     </div>
   );
 };

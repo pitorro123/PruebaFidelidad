@@ -1,10 +1,6 @@
-import { cargarProductos } from './productosService'
+import { peticionJson } from './http'
 
 export async function buscarPrendas(terminoBusqueda) {
-  const crudos = await cargarProductos()
-  const termino = terminoBusqueda.trim().toLowerCase()
-  return crudos
-    .map((p) => p.nombre)
-    .filter((titulo) => titulo.toLowerCase().includes(termino))
-    .slice(0, 6)
+  const productos = await peticionJson(`/productos?q=${encodeURIComponent(terminoBusqueda.trim())}`)
+  return productos.map((p) => p.nombre).slice(0, 6)
 }

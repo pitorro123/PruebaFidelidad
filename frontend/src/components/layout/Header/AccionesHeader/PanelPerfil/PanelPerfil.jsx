@@ -1,8 +1,8 @@
-import { LogOut, UserRound } from "lucide-react"
+import { Coins, LogOut, UserRound } from "lucide-react"
 import styles from "./PanelPerfil.module.css"
 import OpcionMenuPerfil from "../OpcionMenuPerfil/OpcionMenuPerfil"
 
-const PanelPerfil = ({ usuario, cerrarSesion }) => {
+const PanelPerfil = ({ usuario, cerrarSesion, onVerPuntos }) => {
     return (
         <div className={styles.menuPerfil}>
             <div className={styles.datosPerfil}>
@@ -15,6 +15,14 @@ const PanelPerfil = ({ usuario, cerrarSesion }) => {
                         {usuario?.correo || "Nombre Usuario"}
                     </p>
                 </div>
+            </div>
+
+            <div className={styles.contenedorOpciones}>
+                <OpcionMenuPerfil
+                    Icono={Coins}
+                    texto="Mis puntos SUMAS"
+                    onClick={onVerPuntos}
+                />
             </div>
 
             <div className={styles.contenedorCerrarSesion}>

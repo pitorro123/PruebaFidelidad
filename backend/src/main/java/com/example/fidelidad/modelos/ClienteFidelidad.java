@@ -73,4 +73,7 @@ public class ClienteFidelidad {
 
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
+
+    @Column(name = "saldo_puntos", nullable = false)
+    private Integer saldoPuntos = 0;
 }

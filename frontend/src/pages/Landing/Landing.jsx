@@ -5,6 +5,8 @@ import { useAuth } from "../../hooks/useAuth";
 import Hero from "../../components/pages/Landing/Hero/Hero";
 import MarcasDestacadas from "../../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
 import FidelidadModal from "../../components/modals/FidelidadModal/FidelidadModal";
+import PuntosModal from "../../components/modals/PuntosModal/PuntosModal";
+import BannerCampanas from "../../components/campanas/BannerCampanas/BannerCampanas";
 import styles from "./Landing.module.css";
 
 const CLAVE_MODAL_FIDELIDAD_VISTO = 'revuelta_modal_fidelidad_visto';
@@ -14,6 +16,7 @@ function Home() {
     const { autenticado } = useAuth();
     const heroImg = "https://res.cloudinary.com/ihe8jaok/image/upload/v1788192323/landing_img.jpg"
     const [modalFidelidadAbierto, setModalFidelidadAbierto] = useState(false);
+    const [modalPuntosAbierto, setModalPuntosAbierto] = useState(false);
     const [claveFidelidad, setClaveFidelidad] = useState(0);
 
     useEffect(() => {
@@ -32,6 +35,19 @@ function Home() {
         }
     }, [autenticado]);
 
+    useEffect(() => {
+        const solicitarInscripcion = () => {
+            if (!autenticado) {
+                navigate(RUTAS.INICIAR_SESION);
+                return;
+            }
+            setModalFidelidadAbierto(true);
+            setClaveFidelidad((c) => c + 1);
+        };
+        window.addEventListener("fidelidad:solicitarRegistro", solicitarInscripcion);
+        return () => window.removeEventListener("fidelidad:solicitarRegistro", solicitarInscripcion);
+    }, [autenticado, navigate]);
+
     const abrirModalFidelidad = () => {
         if (!autenticado) {
             navigate(RUTAS.INICIAR_SESION);
@@ -45,6 +61,10 @@ function Home() {
         navigate(RUTAS.CATALOGO);
     };
 
+    const abrirModalPuntos = () => {
+        setModalPuntosAbierto(true);
+    };
+
     return (
         <>
             <Hero
@@ -54,6 +74,7 @@ function Home() {
                 onExplorarCatalogo={handleExplorarCatalogo}
             />
             <MarcasDestacadas />
+            <BannerCampanas />
             <section className={styles.ctaFidelidad}>
                 <p className={styles.ctaBadge}>Programa de fidelidad</p>
                 <h2 className={styles.ctaTitulo}>Ahorra 20% en tu primera compra</h2>
@@ -61,18 +82,31 @@ function Home() {
                     Descubre nuestro mundo circular de moda sostenible. Disfruta de descuentos exclusivos, trueques
                     de prendas y ofertas especiales de todas las marcas del grupo.
                 </p>
-                <button
-                    type="button"
-                    className={styles.ctaBoton}
-                    onClick={abrirModalFidelidad}
-                >
-                    Quiero mi 20% de descuento
-                </button>
+                <div className={styles.ctaAcciones}>
+                    <button
+                        type="button"
+                        className={styles.ctaBoton}
+                        onClick={abrirModalFidelidad}
+                    >
+                        Quiero mi 20% de descuento
+                    </button>
+                    <button
+                        type="button"
+                        className={styles.ctaBotonSecundario}
+                        onClick={abrirModalPuntos}
+                    >
+                        Consulta tus puntos
+                    </button>
+                </div>
             </section>
             <FidelidadModal
                 key={claveFidelidad}
                 estaAbierto={modalFidelidadAbierto}
                 onCerrar={() => setModalFidelidadAbierto(false)}
+            />
+            <PuntosModal
+                estaAbierto={modalPuntosAbierto}
+                onCerrar={() => setModalPuntosAbierto(false)}
             />
         </>
     );

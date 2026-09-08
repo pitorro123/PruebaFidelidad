@@ -29,6 +29,18 @@ public class ServicioProductoImpl implements IServicioProducto {
 
     @Override
     @Transactional(readOnly = true)
+    public List<ProductoResponseDTO> buscar(String termino) {
+        String consulta = termino == null ? "" : termino.trim();
+        if (consulta.isEmpty()) {
+            return listar();
+        }
+        return repositorioProducto.buscarPorTermino(consulta).stream()
+                .map(ProductoResponseDTO::from)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ProductoResponseDTO buscarPorId(Long id) {
         Producto producto = repositorioProducto.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));

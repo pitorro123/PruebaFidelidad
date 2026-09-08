@@ -5,6 +5,7 @@ import {
   obtenerDepartamentos,
   obtenerCiudades,
   registrarClienteFidelidad,
+  guardarSocioFidelidad,
 } from "../../../services/fidelidadService";
 import { agregarNotificacion } from "../../../services/notificacionesService";
 import styles from "./FidelidadModal.module.css";
@@ -159,6 +160,12 @@ function FidelidadModal({ estaAbierto, onCerrar }) {
         descripcion: `Te registraste en el programa de fidelidad${marcaSeleccionada ? ` de ${marcaSeleccionada}` : ""}. Ya cuentas con tu 20% de descuento en tu primera compra.`,
       });
       localStorage.setItem("fidelidadInscrito", "true");
+      guardarSocioFidelidad({
+        tipoIdentificacionId: Number(formulario.tipoIdentificacionId),
+        numeroIdentificacion: formulario.numeroIdentificacion.trim(),
+        nombres: formulario.nombres.trim(),
+        apellidos: formulario.apellidos.trim(),
+      });
       window.dispatchEvent(new CustomEvent("fidelidad:inscrito"));
       setVista(VISTA_EXITO);
     } catch (e) {

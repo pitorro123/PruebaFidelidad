@@ -1,20 +1,35 @@
 package com.example.fidelidad.config;
 
+import com.example.fidelidad.modelos.Campana;
 import com.example.fidelidad.modelos.Ciudad;
+import com.example.fidelidad.modelos.ClienteFidelidad;
+import com.example.fidelidad.modelos.Cupon;
 import com.example.fidelidad.modelos.Departamento;
+import com.example.fidelidad.modelos.EstadoCupon;
 import com.example.fidelidad.modelos.Marca;
 import com.example.fidelidad.modelos.Pais;
 import com.example.fidelidad.modelos.Producto;
+import com.example.fidelidad.modelos.TipoCupon;
 import com.example.fidelidad.modelos.TipoIdentificacion;
+import com.example.fidelidad.modelos.TipoMovimientoPuntos;
+import com.example.fidelidad.modelos.TransaccionPuntos;
+import com.example.fidelidad.repositorios.ICampanaRepositorio;
 import com.example.fidelidad.repositorios.ICiudadRepositorio;
+import com.example.fidelidad.repositorios.IClienteFidelidadRepositorio;
+import com.example.fidelidad.repositorios.ICuponRepositorio;
 import com.example.fidelidad.repositorios.IDepartamentoRepositorio;
 import com.example.fidelidad.repositorios.IMarcaRepositorio;
 import com.example.fidelidad.repositorios.IPaisRepositorio;
 import com.example.fidelidad.repositorios.IProductoRepositorio;
 import com.example.fidelidad.repositorios.ITipoIdentificacionRepositorio;
+import com.example.fidelidad.repositorios.ITransaccionPuntosRepositorio;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+
+import java.time.LocalDate;
 
 @Configuration
 public class CargaDatosIniciales {
@@ -26,8 +41,14 @@ public class CargaDatosIniciales {
             ICiudadRepositorio repositorioCiudad,
             ITipoIdentificacionRepositorio repositorioTipo,
             IMarcaRepositorio repositorioMarca,
-            IProductoRepositorio repositorioProducto) {
+            IProductoRepositorio repositorioProducto,
+            IClienteFidelidadRepositorio repositorioCliente,
+            ITransaccionPuntosRepositorio repositorioTransacciones,
+            ICampanaRepositorio repositorioCampana,
+            ICuponRepositorio repositorioCupon,
+            PlatformTransactionManager transactionManager) {
 
+        TransactionTemplate transaccion = new TransactionTemplate(transactionManager);
         return args -> {
             if (repositorioMarca.count() > 0) {
                 return;
@@ -40,7 +61,7 @@ public class CargaDatosIniciales {
             Marca nafNaf = repositorioMarca.save(new Marca("Naf Naf"));
             Marca rifle = repositorioMarca.save(new Marca("Rifle"));
 
-            repositorioTipo.save(new TipoIdentificacion("CC", "Cedula de Ciudadania"));
+            TipoIdentificacion cc = repositorioTipo.save(new TipoIdentificacion("CC", "Cedula de Ciudadania"));
             repositorioTipo.save(new TipoIdentificacion("CE", "Cedula de Extranjeria"));
             repositorioTipo.save(new TipoIdentificacion("NIT", "NIT"));
             repositorioTipo.save(new TipoIdentificacion("PASAPORTE", "Pasaporte"));
@@ -81,6 +102,11 @@ public class CargaDatosIniciales {
 
             sembrarProductos(repositorioProducto, americanino, americanEagle, chevignon,
                     esprit, nafNaf, rifle);
+
+            transaccion.executeWithoutResult(status -> sembrarClienteDePrueba(
+                        repositorioCliente, repositorioTransacciones,
+                        repositorioCiudad, repositorioCampana, repositorioCupon,
+                        cc, chevignon, americanEagle));
         };
     }
 
@@ -138,5 +164,96 @@ public class CargaDatosIniciales {
     private String urlImagen(int numero) {
         return "https://res.cloudinary.com/zslcesok/image/upload/v1788317585/prenda_"
                 + String.format("%02d", numero) + ".png";
+    }
+
+    private void sembrarClienteDePrueba(
+            IClienteFidelidadRepositorio repoCliente,
+            ITransaccionPuntosRepositorio repoTransacciones,
+            ICiudadRepositorio repoCiudad,
+            ICampanaRepositorio repoCampana,
+            ICuponRepositorio repoCupon,
+            TipoIdentificacion cc,
+            Marca chevignon,
+            Marca americanEagle) {
+        if (repoCliente.count() > 0) {
+            return;
+        }
+        Ciudad medellin = repoCiudad.findFirstByNombre("Medellin").orElseThrow();
+
+        ClienteFidelidad cliente = new ClienteFidelidad();
+        cliente.setEmail("ana.gomez@correo.com");
+        cliente.setTipoIdentificacion(cc);
+        cliente.setNumeroIdentificacion("1000000001");
+        cliente.setNombres("Ana Sofia");
+        cliente.setApellidos("Gomez Ruiz");
+        cliente.setFechaNacimiento(LocalDate.of(1995, LocalDate.now().getMonthValue(), 15));
+        cliente.setDireccion("Carrera 70 # 45 - 12");
+        cliente.setCiudad(medellin);
+        cliente.setDepartamento(medellin.getDepartamento());
+        cliente.setPais(medellin.getDepartamento().getPais());
+        cliente.setMarca(chevignon);
+        cliente.setFechaRegistro(LocalDate.now().minusMonths(3));
+        cliente.setSaldoPuntos(15_000);
+        repoCliente.save(cliente);
+
+        registrarCompra(repoTransacciones, cliente, chevignon, 5_000,
+                "TICKET-10001", LocalDate.now().minusDays(40));
+        registrarCompra(repoTransacciones, cliente, americanEagle, 6_500,
+                "TICKET-10002", LocalDate.now().minusDays(20));
+        registrarCompra(repoTransacciones, cliente, chevignon, 3_500,
+                "TICKET-10003", LocalDate.now().minusDays(5));
+
+        LocalDate hoy = LocalDate.now();
+        Campana sumasDays = repoCampana.save(new Campana(
+                "Sumas Days",
+                "Descuento especial de temporada para los miembros del club",
+                hoy.minusDays(2),
+                hoy.plusDays(10),
+                40));
+
+        cuponDePrueba(repoCupon, cliente, sumasDays, TipoCupon.SUMAS_DAYS,
+                "SUMAS-40-" + cliente.getId(), 40, hoy.plusDays(10));
+        cuponDePrueba(repoCupon, cliente, null, TipoCupon.CUMPLEANOS,
+                "FELIZ-MES-" + cliente.getId(), 20, ultimoDiaDelMes(hoy));
+    }
+
+    private void cuponDePrueba(
+            ICuponRepositorio repoCupon,
+            ClienteFidelidad cliente,
+            Campana campana,
+            TipoCupon tipo,
+            String codigo,
+            int descuento,
+            LocalDate fechaExpiracion) {
+        Cupon cupon = new Cupon();
+        cupon.setCliente(cliente);
+        cupon.setCampana(campana);
+        cupon.setTipo(tipo);
+        cupon.setCodigo(codigo);
+        cupon.setDescuentoPorcentaje(descuento);
+        cupon.setFechaExpiracion(fechaExpiracion);
+        cupon.setEstado(EstadoCupon.ACTIVO);
+        repoCupon.save(cupon);
+    }
+
+    private LocalDate ultimoDiaDelMes(LocalDate fecha) {
+        return fecha.withDayOfMonth(fecha.lengthOfMonth());
+    }
+
+    private void registrarCompra(
+            ITransaccionPuntosRepositorio repoTransacciones,
+            ClienteFidelidad cliente,
+            Marca marca,
+            int valorCompra,
+            String referencia,
+            LocalDate fecha) {
+        TransaccionPuntos transaccion = new TransaccionPuntos();
+        transaccion.setCliente(cliente);
+        transaccion.setMarca(marca);
+        transaccion.setTipo(TipoMovimientoPuntos.ACUMULACION);
+        transaccion.setPuntos(valorCompra);
+        transaccion.setReferencia(referencia);
+        transaccion.setFecha(fecha);
+        repoTransacciones.save(transaccion);
     }
 }

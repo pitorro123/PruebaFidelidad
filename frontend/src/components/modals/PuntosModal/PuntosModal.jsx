@@ -1,0 +1,525 @@
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import {
+  cargarCatalogosIniciales,
+  consultarPuntos,
+  acumularPuntos,
+  canjearPuntos,
+  obtenerCupones,
+  usarCupon,
+} from "../../../services/fidelidadService";
+import { agregarNotificacion } from "../../../services/notificacionesService";
+import styles from "./PuntosModal.module.css";
+
+const PISO_CANJE_SUMAS = 10000;
+
+const formatoNumero = new Intl.NumberFormat("es-CO");
+
+function nombreTipoCupon(tipo) {
+  if (tipo === "CUMPLEANOS") return "Bono de cumpleaños";
+  if (tipo === "SUMAS_DAYS") return "Sumas Days";
+  return tipo;
+}
+
+function PuntosModal({ estaAbierto, onCerrar }) {
+  const [cargandoCatalogo, setCargandoCatalogo] = useState(true);
+  const [error, setError] = useState("");
+  const [reintento, setReintento] = useState(0);
+
+  const [tiposIdentificacion, setTiposIdentificacion] = useState([]);
+  const [marcas, setMarcas] = useState([]);
+
+  const [busqueda, setBusqueda] = useState({
+    tipoIdentificacionId: "",
+    numeroIdentificacion: "",
+  });
+  const [consultando, setConsultando] = useState(false);
+  const [datos, setDatos] = useState(null);
+  const [cupones, setCupones] = useState([]);
+  const [aplicandoCupon, setAplicandoCupon] = useState(false);
+
+  const [accion, setAccion] = useState(null);
+  const [formularioAccion, setFormularioAccion] = useState({
+    marcaId: "",
+    valorCompra: "",
+    puntosCanje: "",
+    referencia: "",
+  });
+  const [ejecutando, setEjecutando] = useState(false);
+
+  useEffect(() => {
+    let activo = true;
+
+    cargarCatalogosIniciales()
+      .then(({ tiposIdentificacion, marcas }) => {
+        if (!activo) return;
+        setTiposIdentificacion(tiposIdentificacion);
+        setMarcas(marcas);
+      })
+      .catch((e) => {
+        if (activo) setError(e?.message || "No se pudieron cargar los catalogos.");
+      })
+      .finally(() => {
+        if (activo) setCargandoCatalogo(false);
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, [reintento]);
+
+  const reintentarCarga = () => {
+    setError("");
+    setCargandoCatalogo(true);
+    setReintento((r) => r + 1);
+  };
+
+  const limpiar = () => {
+    setError("");
+    setDatos(null);
+    setCupones([]);
+    setAccion(null);
+    setBusqueda({ tipoIdentificacionId: "", numeroIdentificacion: "" });
+    setFormularioAccion({
+      marcaId: "",
+      valorCompra: "",
+      puntosCanje: "",
+      referencia: "",
+    });
+  };
+
+  const cargarCupones = (tipoIdentificacionId, numeroIdentificacion) => {
+    obtenerCupones(Number(tipoIdentificacionId), numeroIdentificacion.trim())
+      .then(setCupones)
+      .catch(() => setCupones([]));
+  };
+
+  const manejarConsulta = async (evento) => {
+    evento.preventDefault();
+    setError("");
+
+    if (!busqueda.tipoIdentificacionId || !busqueda.numeroIdentificacion.trim()) {
+      setError("Selecciona el tipo e ingresa el numero de identificacion.");
+      return;
+    }
+
+    setConsultando(true);
+    try {
+      const resultado = await consultarPuntos(
+        Number(busqueda.tipoIdentificacionId),
+        busqueda.numeroIdentificacion.trim()
+      );
+      setDatos(resultado);
+      cargarCupones(busqueda.tipoIdentificacionId, busqueda.numeroIdentificacion);
+      setAccion(null);
+    } catch (e) {
+      setError(e?.message || "Ocurrio un error al consultar los puntos.");
+    } finally {
+      setConsultando(false);
+    }
+  };
+
+  const validarAccion = () => {
+    if (accion === "acumular" && !formularioAccion.valorCompra) {
+      return "Ingresa el valor de la compra.";
+    }
+    const valorCompra = Number(formularioAccion.valorCompra);
+    if (accion === "acumular" && (!formularioAccion.valorCompra || valorCompra <= 0)) {
+      return "El valor de la compra debe ser mayor a cero.";
+    }
+    if (accion === "canjear" && (!formularioAccion.puntosCanje || Number(formularioAccion.puntosCanje) <= 0)) {
+      return "Ingresa la cantidad de puntos a canjear.";
+    }
+    if (accion === "canjear" && Number(formularioAccion.puntosCanje) > datos.saldoPuntos) {
+      return "La cantidad a canjear supera tu saldo disponible.";
+    }
+    return "";
+  };
+
+  const manejarAccion = async (evento) => {
+    evento.preventDefault();
+    setError("");
+
+    const mensajeError = validarAccion();
+    if (mensajeError) {
+      setError(mensajeError);
+      return;
+    }
+
+    const base = {
+      tipoIdentificacionId: Number(busqueda.tipoIdentificacionId),
+      numeroIdentificacion: busqueda.numeroIdentificacion.trim(),
+      marcaId: Number(formularioAccion.marcaId),
+    };
+    if (!formularioAccion.marcaId) {
+      setError("Selecciona la marca.");
+      return;
+    }
+
+    setEjecutando(true);
+    try {
+      const resultado =
+        accion === "acumular"
+          ? await acumularPuntos({
+              ...base,
+              valorCompra: Number(formularioAccion.valorCompra),
+              referencia: formularioAccion.referencia.trim() || undefined,
+            })
+          : await canjearPuntos({
+              ...base,
+              puntos: Number(formularioAccion.puntosCanje),
+              referencia: formularioAccion.referencia.trim() || undefined,
+            });
+
+      setDatos(resultado);
+      cargarCupones(base.tipoIdentificacionId, base.numeroIdentificacion);
+      setFormularioAccion({
+        marcaId: "",
+        valorCompra: "",
+        puntosCanje: "",
+        referencia: "",
+      });
+      setAccion(null);
+
+      const marcaNombre = marcas.find((m) => String(m.id) === String(base.marcaId))?.nombre || "";
+      agregarNotificacion({
+        id: `puntos-${Date.now()}`,
+        referenciaVisual: "fidelidad",
+        descripcion:
+          accion === "acumular"
+            ? `Acumulaste ${formatoNumero.format(Number(formularioAccion.valorCompra))} SUMAS${marcaNombre ? ` comprando en ${marcaNombre}` : ""}.`
+            : `Canjeaste ${formatoNumero.format(Number(formularioAccion.puntosCanje))} SUMAS${marcaNombre ? ` en ${marcaNombre}` : ""}.`,
+      });
+    } catch (e) {
+      setError(e?.message || "Ocurrio un error al procesar la transaccion.");
+    } finally {
+      setEjecutando(false);
+    }
+  };
+
+  const manejarAplicarCupon = async (codigo) => {
+    setError("");
+    setAplicandoCupon(true);
+    try {
+      const actualizado = await usarCupon(codigo);
+      setCupones((prev) =>
+        prev.map((c) => (c.codigo === codigo ? actualizado : c))
+      );
+      agregarNotificacion({
+        id: `cupon-${Date.now()}`,
+        referenciaVisual: "fidelidad",
+        descripcion: `Aplicaste tu ${nombreTipoCupon(actualizado.tipo)} de ${actualizado.descuentoPorcentaje}% (codigo ${codigo}).`,
+      });
+    } catch (e) {
+      setError(e?.message || "Ocurrio un error al aplicar el cupon.");
+    } finally {
+      setAplicandoCupon(false);
+    }
+  };
+
+  if (!estaAbierto) return null;
+
+  return createPortal(
+    <div className={styles.overlay} onClick={onCerrar}>
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className={styles.botonCerrar}
+          onClick={() => {
+            limpiar();
+            onCerrar();
+          }}
+          aria-label="Cerrar"
+        >
+          &times;
+        </button>
+
+        {cargandoCatalogo ? (
+          <p className={styles.cargando}>Cargando catalogos...</p>
+        ) : marcas.length === 0 && error ? (
+          <div className={styles.errorCarga}>
+            <p className={styles.mensajeErrorCarga}>{error}</p>
+            <button type="button" className={styles.botonReintentar} onClick={reintentarCarga}>
+              Reintentar
+            </button>
+          </div>
+        ) : !datos ? (
+          <>
+            <div className={styles.cabecera}>
+              <p className={styles.badge}>Puntos SUMAS</p>
+              <h2 className={styles.titulo}>Consulta tus puntos</h2>
+              <p className={styles.subtitulo}>
+                Ingresa tu identificacion para ver tu saldo, acumular por compras o canjear.
+              </p>
+            </div>
+
+            <form className={styles.formulario} onSubmit={manejarConsulta}>
+              <div className={styles.fila}>
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="puntosTipo">
+                    Tipo de identificacion
+                  </label>
+                  <select
+                    id="puntosTipo"
+                    className={styles.select}
+                    value={busqueda.tipoIdentificacionId}
+                    onChange={(e) =>
+                      setBusqueda((prev) => ({ ...prev, tipoIdentificacionId: e.target.value }))
+                    }
+                  >
+                    <option value="">Selecciona...</option>
+                    {tiposIdentificacion.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="puntosNumero">
+                    Numero de identificacion
+                  </label>
+                  <input
+                    id="puntosNumero"
+                    className={styles.input}
+                    type="text"
+                    value={busqueda.numeroIdentificacion}
+                    onChange={(e) =>
+                      setBusqueda((prev) => ({ ...prev, numeroIdentificacion: e.target.value }))
+                    }
+                    placeholder="123456789"
+                  />
+                </div>
+              </div>
+
+              {error && <p className={styles.error}>{error}</p>}
+
+              <button type="submit" className={styles.botonEnviar} disabled={consultando}>
+                {consultando ? "Consultando..." : "Consultar puntos"}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <div className={styles.cabecera}>
+              <p className={styles.badge}>Puntos SUMAS</p>
+              <h2 className={styles.titulo}>
+                Hola, {datos.nombres.split(" ")[0]} {datos.apellidos.split(" ")[0]}
+              </h2>
+              <p className={styles.documento}>
+                {datos.tipoIdentificacionCodigo} {datos.numeroIdentificacion}
+              </p>
+            </div>
+
+            <div className={styles.tarjetaSaldo}>
+              <p className={styles.saldoEtiqueta}>Saldo de SUMAS</p>
+              <p className={styles.saldoValor}>{formatoNumero.format(datos.saldoPuntos)}</p>
+              <p className={styles.saldoDetalle}>
+                Equivalente a {formatoNumero.format(datos.saldoPuntos)} pesos COP para canjear
+              </p>
+            </div>
+
+            {error && <p className={styles.error}>{error}</p>}
+
+            <div className={styles.acciones}>
+              <button
+                type="button"
+                className={styles.botonAcumular}
+                onClick={() => {
+                  setError("");
+                  setAccion(accion === "acumular" ? null : "acumular");
+                }}
+              >
+                {accion === "acumular" ? "Cancelar acumulacion" : "Acumular por compra"}
+              </button>
+              <button
+                type="button"
+                className={styles.botonCanjear}
+                onClick={() => {
+                  setError("");
+                  if (datos.saldoPuntos < PISO_CANJE_SUMAS) {
+                    setError("Debes acumular al menos 10.000 SUMAS para poder canjear.");
+                    return;
+                  }
+                  setAccion(accion === "canjear" ? null : "canjear");
+                }}
+              >
+                {accion === "canjear" ? "Cancelar canje" : "Canjear puntos"}
+              </button>
+            </div>
+
+            {accion && (
+              <form className={styles.formularioAccion} onSubmit={manejarAccion}>
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="accionMarca">
+                    Marca
+                  </label>
+                  <select
+                    id="accionMarca"
+                    className={styles.select}
+                    value={formularioAccion.marcaId}
+                    onChange={(e) =>
+                      setFormularioAccion((prev) => ({ ...prev, marcaId: e.target.value }))
+                    }
+                  >
+                    <option value="">Selecciona...</option>
+                    {marcas.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {accion === "acumular" ? (
+                  <div className={styles.grupo}>
+                    <label className={styles.etiqueta} htmlFor="valorCompra">
+                      Valor de la compra en pesos (1 SUMAS por cada $1)
+                    </label>
+                    <input
+                      id="valorCompra"
+                      className={styles.input}
+                      type="number"
+                      min="1"
+                      value={formularioAccion.valorCompra}
+                      onChange={(e) =>
+                        setFormularioAccion((prev) => ({ ...prev, valorCompra: e.target.value }))
+                      }
+                      placeholder="ej. 50000"
+                    />
+                  </div>
+                ) : (
+                  <div className={styles.grupo}>
+                    <label className={styles.etiqueta} htmlFor="puntosCanje">
+                      Puntos a canjear (max. {formatoNumero.format(datos.saldoPuntos)})
+                    </label>
+                    <input
+                      id="puntosCanje"
+                      className={styles.input}
+                      type="number"
+                      min="1"
+                      max={datos.saldoPuntos}
+                      value={formularioAccion.puntosCanje}
+                      onChange={(e) =>
+                        setFormularioAccion((prev) => ({ ...prev, puntosCanje: e.target.value }))
+                      }
+                      placeholder="ej. 2000"
+                    />
+                  </div>
+                )}
+
+                <div className={styles.grupo}>
+                  <label className={styles.etiqueta} htmlFor="referencia">
+                    Referencia (opcional)
+                  </label>
+                  <input
+                    id="referencia"
+                    className={styles.input}
+                    type="text"
+                    value={formularioAccion.referencia}
+                    onChange={(e) =>
+                      setFormularioAccion((prev) => ({ ...prev, referencia: e.target.value }))
+                    }
+                    placeholder="Tickect, factura u orden"
+                  />
+                </div>
+
+                <button type="submit" className={styles.botonEnviar} disabled={ejecutando}>
+                  {ejecutando
+                    ? "Procesando..."
+                    : accion === "acumular"
+                    ? "Acumular SUMAS"
+                    : "Canjear SUMAS"}
+                </button>
+              </form>
+            )}
+
+            {datos.movimientos.length > 0 && (
+              <div className={styles.historial}>
+                <h3 className={styles.historialTitulo}>Historial de movimientos</h3>
+                <ul className={styles.listaMovimientos}>
+                  {datos.movimientos.map((movimiento) => (
+                    <li key={movimiento.id} className={styles.movimiento}>
+                      <span
+                        className={
+                          movimiento.tipo === "CANJE"
+                            ? styles.movimientoTipoCanje
+                            : styles.movimientoTipoAcumulacion
+                        }
+                      >
+                        {movimiento.tipo === "CANJE" ? "-" : "+"}
+                        {formatoNumero.format(movimiento.puntos)} SUMAS
+                      </span>
+                      <span className={styles.movimientoDetalle}>
+                        <span className={styles.movimientoMarca}>{movimiento.marca}</span>
+                        <span className={styles.movimientoFecha}>{movimiento.fecha}</span>
+                      </span>
+                      {movimiento.referencia && (
+                        <span className={styles.movimientoReferencia}>
+                          {movimiento.referencia}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {cupones.length > 0 && (
+              <div className={styles.historial}>
+                <h3 className={styles.historialTitulo}>Mis cupones y bonos</h3>
+                <ul className={styles.listaCupones}>
+                  {cupones.map((cupon) => (
+                    <li key={cupon.id} className={styles.cupon}>
+                      <div className={styles.cuponInfo}>
+                        <p className={styles.cuponNombre}>
+                          {nombreTipoCupon(cupon.tipo)}
+                        </p>
+                        <p className={styles.cuponDetalle}>
+                          {cupon.descuentoPorcentaje}% de descuento · {cupon.codigo} · vence el{" "}
+                          {cupon.fechaExpiracion}
+                        </p>
+                      </div>
+                      {cupon.estado === "ACTIVO" ? (
+                        <button
+                          type="button"
+                          className={styles.botonCupon}
+                          disabled={aplicandoCupon}
+                          onClick={() => manejarAplicarCupon(cupon.codigo)}
+                        >
+                          {aplicandoCupon ? "Aplicando..." : "Aplicar"}
+                        </button>
+                      ) : (
+                        <span
+                          className={
+                            cupon.estado === "USADO"
+                              ? styles.estadoCuponUsado
+                              : styles.estadoCuponExpirado
+                          }
+                        >
+                          {cupon.estado === "USADO" ? "Usado" : "Expirado"}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <button type="button" className={styles.botonVolver} onClick={limpiar}>
+              Consultar otro documento
+            </button>
+          </>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+export default PuntosModal;

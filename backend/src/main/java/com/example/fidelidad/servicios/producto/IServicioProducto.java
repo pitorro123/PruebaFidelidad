@@ -8,5 +8,7 @@ public interface IServicioProducto {
 
     List<ProductoResponseDTO> listar();
 
+    List<ProductoResponseDTO> buscar(String termino);
+
     ProductoResponseDTO buscarPorId(Long id);
 }
