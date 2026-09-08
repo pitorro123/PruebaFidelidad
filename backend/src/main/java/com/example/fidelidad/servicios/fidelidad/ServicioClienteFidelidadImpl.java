@@ -2,8 +2,6 @@ package com.example.fidelidad.servicios.fidelidad;
 
 import com.example.fidelidad.dtos.fidelidad.ClienteFidelidadRequestDTO;
 import com.example.fidelidad.dtos.fidelidad.ClienteFidelidadResponseDTO;
-import com.example.fidelidad.dtos.fidelidad.VerificacionRequestDTO;
-import com.example.fidelidad.dtos.fidelidad.VerificacionResponseDTO;
 import com.example.fidelidad.modelos.Ciudad;
 import com.example.fidelidad.modelos.ClienteFidelidad;
 import com.example.fidelidad.modelos.Cupon;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
@@ -107,40 +104,6 @@ public class ServicioClienteFidelidadImpl implements IServicioClienteFidelidad {
 
     private LocalDate ultimoDiaDelMes(LocalDate fecha) {
         return fecha.withDayOfMonth(fecha.lengthOfMonth());
-    }
-
-    @Override
-    public VerificacionResponseDTO verificar(VerificacionRequestDTO dto) {
-        Long tipoId = dto.tipoIdentificacionId();
-        Long marcaId = dto.marcaId();
-        String numero = dto.numeroIdentificacion();
-        if (tipoId == null || marcaId == null || numero == null || numero.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Datos de verificacion incompletos");
-        }
-        boolean inscrito = repositorioCliente
-                .existsByTipoIdentificacionIdAndNumeroIdentificacionAndMarcaId(
-                        tipoId, numero.trim(), marcaId);
-        ClienteFidelidad existente = repositorioCliente
-                .findFirstByTipoIdentificacionIdAndNumeroIdentificacionOrderByFechaRegistroDesc(
-                        tipoId, numero.trim())
-                .orElse(null);
-        return new VerificacionResponseDTO(inscrito, existente == null ? null : toResponse(existente));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ClienteFidelidadResponseDTO> listar() {
-        return repositorioCliente.findAllByOrderByFechaRegistroDesc().stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ClienteFidelidadResponseDTO buscarPorId(Long id) {
-        ClienteFidelidad cliente = repositorioCliente.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado"));
-        return toResponse(cliente);
     }
 
     private ClienteFidelidadResponseDTO toResponse(ClienteFidelidad c) {
