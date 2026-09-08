@@ -58,17 +58,22 @@ La app envia correos HTML reales por Gmail SMTP:
 
 Para que los participantes del demo reciban los correos en su bandeja:
 
-1. Crea el archivo `backend/.env` (esta ignorado en git) con:
+1. Las credenciales ya vienen **versionadas en `backend/.env`** (repo privado), por lo que **al clonar ya funcionan** sin configurar nada.
+
+Si necesitas reconfigurarlas (p. ej. cambiar el correo remitente):
+
+2. Edita `backend/.env`:
 
    ```bash
    MAIL_USERNAME=tu.correo.remitente@gmail.com
    MAIL_PASSWORD=xxxxxxxxxxxxxxxxxxxx
    ```
 
-2. `MAIL_PASSWORD` es la **contraseña de aplicacion** de Google: en tu cuenta de Google ve a *Seguridad > Verificación en 2 pasos > Contraseñas de aplicaciones* y genera una para la app "Correo".
-3. El envio usa `smtp.gmail.com:587` con STARTTLS (ya configurado en `application.properties`).
-4. En la pantalla **Crear cuenta** el formulario pide un **correo real** y rechaza dominios falsos (`@test.com`, `@ejemplo.com`, `@mailinator.com`, etc.) para que el participante reciba alli su bono de bienvenida.
-5. Reinicia el backend con `./mvnw spring-boot:run`. En la consola deberia verse `Correo de bienvenida enviado a ...` por cada correo enviado (o un `log.warn` si falla).
+3. `MAIL_PASSWORD` es la **contraseña de aplicacion** de Google: en tu cuenta de Google ve a *Seguridad > Verificación en 2 pasos > Contraseñas de aplicaciones* y genera una para la app "Correo".
+   - ⚠️ Si tu repo es/claramente publico, mejor NO versiones `.env` con credenciales: vuelve a agregar `.env` al `.gitignore` y que cada PC cree su propio archivo.
+4. El envio usa `smtp.gmail.com:587` con STARTTLS (ya configurado en `application.properties`).
+5. En la pantalla **Crear cuenta** el formulario pide un **correo real** y rechaza dominios falsos (`@test.com`, `@ejemplo.com`, `@mailinator.com`, etc.) para que el participante reciba alli su bono de bienvenida.
+6. Reinicia el backend con `./mvnw spring-boot:run`. En la consola deberia verse `Correo de bienvenida enviado a ...` por cada correo enviado (o un `log.warn` si falla).
 
 > **Nota:** si `MAIL_USERNAME`/`MAIL_PASSWORD` estan vacios, el registro funciona igual pero no se envian correos.
 
