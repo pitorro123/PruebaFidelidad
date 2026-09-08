@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RUTAS } from "../../constants/rutas"
 import { useAuth } from "../../hooks/useAuth";
-import { mostrarToast } from "../../services/toastService";
 import Hero from "../../components/pages/Landing/Hero/Hero";
 import MarcasDestacadas from "../../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
 import FidelidadModal from "../../components/modals/FidelidadModal/FidelidadModal";
@@ -63,7 +62,7 @@ function Home() {
 
     const abrirModalPuntos = () => {
         if (!autenticado) {
-            mostrarToast("Inicia sesión y regístrate.", "info");
+            navigate(RUTAS.REGISTRO);
             return;
         }
         setModalPuntosAbierto(true);
