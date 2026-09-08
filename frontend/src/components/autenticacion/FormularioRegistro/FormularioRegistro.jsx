@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { validarFormatoCorreo, validarSeguridadContrasena, validarCoincidenciaContrasenas } from '../../../utils/validaciones.js'
+import { validarCorreoReal, validarSeguridadContrasena, validarCoincidenciaContrasenas } from '../../../utils/validaciones.js'
 import { registrarCuenta } from '../../../services/registroService.js'
 import styles from './FormularioRegistro.module.css'
 
@@ -19,8 +19,11 @@ export default function FormularioRegistro({ onRegistroExitoso }) {
 
     if (!correo.trim()) {
       nuevosErrores.correo = 'El correo electrónico es obligatorio.'
-    } else if (!validarFormatoCorreo(correo)) {
-      nuevosErrores.correo = 'Ingresa un formato de correo válido (ej. usuario@ejemplo.com).'
+    } else {
+      const correoValido = validarCorreoReal(correo)
+      if (!correoValido.valida) {
+        nuevosErrores.correo = correoValido.mensaje
+      }
     }
 
     const contrasenaValida = validarSeguridadContrasena(contrasena)
@@ -59,6 +62,16 @@ export default function FormularioRegistro({ onRegistroExitoso }) {
 
   return (
     <div className={styles.tarjeta}>
+      <div className={styles.avisoBienvenida} role="note">
+        <span className={styles.avisoIcono} aria-hidden="true">
+          ✉
+        </span>
+        <p>
+          <strong>Usa un correo real y revísalo:</strong> ahí te enviaremos tu
+          <strong> bono de 20% de descuento</strong> para la primera compra.
+        </p>
+      </div>
+
       {errorGlobal && (
         <div className={styles.alertaErrorGlobal} role="alert">
           {errorGlobal}
@@ -78,7 +91,7 @@ export default function FormularioRegistro({ onRegistroExitoso }) {
               id="correo"
               name="correo"
               type="email"
-              placeholder="Ingresa tu correo electrónico"
+              placeholder="ej. tu.nombre@gmail.com"
               className={`${styles.input} ${errores.correo ? styles.inputError : ''}`}
               value={correo}
               onChange={(e) => {
@@ -89,7 +102,11 @@ export default function FormularioRegistro({ onRegistroExitoso }) {
               disabled={enviando}
             />
           </div>
-          {errores.correo && <span className={styles.errorTexto}>{errores.correo}</span>}
+          {errores.correo ? (
+            <span className={styles.errorTexto}>{errores.correo}</span>
+          ) : (
+            <span className={styles.ayudaCorreo}>Aquí llegará tu bono de bienvenida de 20%.</span>
+          )}
         </div>
 
         <div className={styles.campo}>

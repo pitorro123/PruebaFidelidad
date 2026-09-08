@@ -8,6 +8,31 @@
   box-shadow: 0 4px 16px rgba(21, 32, 27, 0.04);
 }
 
+.avisoBienvenida {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: rgba(62, 156, 122, 0.1);
+  border: 1px solid rgba(62, 156, 122, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.avisoIcono {
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--moss);
+}
+
+.ayudaCorreo {
+  font-size: 0.75rem;
+  color: #7a807a;
+}
+
 .formulario {
   display: flex;
   flex-direction: column;
