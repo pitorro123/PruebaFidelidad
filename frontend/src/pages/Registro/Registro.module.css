@@ -9,6 +9,7 @@
 
 .titulo {
   font-size: 1.6rem;
+  margin-top: 0;
   margin-bottom: 0.4rem;
   text-align: center;
   color: var(--ink);
