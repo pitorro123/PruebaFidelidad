@@ -64,11 +64,11 @@ public class ServicioPuntosImpl implements IServicioPuntos {
         }
         ClienteFidelidad cliente = buscarPorDocumento(dto.tipoIdentificacionId(), dto.numeroIdentificacion());
         if (cliente.getSaldoPuntos() < MINIMO_CANJE_SUMAS) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+            throw new ResponseStatusException(HttpStatus.valueOf(422),
                     "Debe acumular al menos " + MINIMO_CANJE_SUMAS + " puntos para poder canjear");
         }
         if (dto.puntos() > cliente.getSaldoPuntos()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Saldo de puntos insuficiente");
+            throw new ResponseStatusException(HttpStatus.valueOf(422), "Saldo de puntos insuficiente");
         }
         Marca marca = dto.marcaId() == null ? null : repositorioMarca.findById(dto.marcaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca invalida"));

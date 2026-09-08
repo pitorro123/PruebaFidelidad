@@ -17,7 +17,7 @@ public class ServicioCorreoImpl implements IServicioCorreo {
     private static final String COLOR_PINE = "#1f5e4a";
     private static final String COLOR_MOSS = "#3e9c7a";
     private static final String COLOR_MARIGOLD = "#f2a03d";
-    private static final String COLOR_CLAY = "#e8643c";
+
     private static final String COLOR_INK = "#22251f";
 
     private final JavaMailSender mailSender;
