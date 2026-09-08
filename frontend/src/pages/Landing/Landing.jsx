@@ -7,7 +7,6 @@ import Hero from "../../components/pages/Landing/Hero/Hero";
 import MarcasDestacadas from "../../components/pages/Landing/MarcasDestacadas/MarcasDestacadas";
 import FidelidadModal from "../../components/modals/FidelidadModal/FidelidadModal";
 import PuntosModal from "../../components/modals/PuntosModal/PuntosModal";
-import BannerCampanas from "../../components/campanas/BannerCampanas/BannerCampanas";
 import styles from "./Landing.module.css";
 
 const CLAVE_MODAL_FIDELIDAD_VISTO = 'revuelta_modal_fidelidad_visto';
@@ -79,7 +78,6 @@ function Home() {
                 onExplorarCatalogo={handleExplorarCatalogo}
             />
             <MarcasDestacadas />
-            <BannerCampanas />
             <section className={styles.ctaFidelidad}>
                 <p className={styles.ctaBadge}>Programa de fidelidad</p>
                 <h2 className={styles.ctaTitulo}>Ahorra 20% en tu primera compra</h2>

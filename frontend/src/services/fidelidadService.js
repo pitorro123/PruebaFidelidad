@@ -72,10 +72,6 @@ export async function canjearPuntos(datos) {
   })
 }
 
-export async function obtenerCampanasActivas() {
-  return peticionJson('/campanas/activas')
-}
-
 export async function obtenerCupones(tipoIdentificacionId, numeroIdentificacion) {
   return peticionJson(
     `/cupones?tipoIdentificacionId=${tipoIdentificacionId}&numeroIdentificacion=${encodeURIComponent(numeroIdentificacion)}`

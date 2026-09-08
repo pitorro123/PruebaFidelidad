@@ -8,7 +8,6 @@ import PaginacionCatalogo from '../../../components/catalogo/PaginacionCatalogo/
 import { filtrosCatalogo } from '../../../data/filtros.js'
 import { obtenerProductos } from '../../../services/productosService.js'
 import { RUTAS } from '../../../constants/rutas.js'
-import BannerCampanas from '../../../components/campanas/BannerCampanas/BannerCampanas.jsx'
 import styles from './Catalogo.module.css'
 
 function filtroInicialDesdeUrl(searchParams) {
@@ -119,7 +118,6 @@ function Catalogo() {
 
   return (
     <div className={styles.catalogo}>
-      <BannerCampanas />
       <div className={styles.catalogoCabecera}>
         <h1 className={styles.catalogoTitulo}>Catálogo</h1>
         <div className={styles.cabeceraControles}>
